@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#f1f5f9"/>
 <title>Pocket Tracker</title>
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--ok:#16a34a;--warn:#f59e0b;--danger:#dc2626;--track:#e8edf3;--soft:#f8fafc}
-body.theme-dark{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--line:#334155;--track:#334155;--soft:#0f172a}
+:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--ok:#16a34a;--warn:#f59e0b;--danger:#dc2626;--danger-bg:#fee2e2;--danger-text:#b91c1c;--track:#e8edf3;--soft:#f8fafc}
+body.theme-dark{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--line:#334155;--track:#334155;--soft:#1e293b;--danger-bg:#7f1d1d;--danger-text:#fecaca}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -35,8 +35,10 @@ h1,h2,p{margin:0}
 .bd-line{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
 .bd-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bd-amt{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-.bd-mini{height:4px;border-radius:99px;background:var(--track);margin-top:5px;overflow:hidden}
-.bd-mini>i{display:block;height:100%;border-radius:99px}
+.bd-mini,.cat-budget-bar{height:4px;border-radius:99px;background:var(--track);overflow:hidden}
+.bd-mini{margin-top:5px}
+.cat-budget-bar{margin-top:6px}
+.bd-mini>i,.cat-budget-bar>i{display:block;height:100%;border-radius:99px}
 .monthnav{display:flex;align-items:center;gap:8px;margin:16px 0 8px}
 .nav-btn{width:44px;height:44px;flex:0 0 auto;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;display:grid;place-items:center;line-height:1}
 .nav-btn:active{background:var(--soft)}
@@ -58,7 +60,7 @@ h1,h2,p{margin:0}
 .item-amt{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .item-line2{display:block;font-size:12px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-del{width:44px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);color:var(--danger);font-size:15px;display:grid;place-items:center}
-.item-del:active{background:#fef2f2}
+.item-del:active{background:rgba(220,38,38,.15)}
 .empty{text-align:center;padding:34px 16px;color:var(--muted);font-size:14px}
 .empty strong{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
 .see-all{display:block;width:100%;padding:14px;margin-top:4px;color:var(--primary);font-weight:700;font-size:13px;text-align:center}
@@ -69,7 +71,7 @@ h1,h2,p{margin:0}
 .overlay.open{opacity:1;pointer-events:auto}
 .sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:480px;z-index:50;background:var(--card);border-radius:20px 20px 0 0;transform:translate(-50%,101%);transition:transform .26s cubic-bezier(.4,0,.2,1);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 -8px 32px rgba(15,23,42,.16)}
 .sheet.open{transform:translate(-50%,0)}
-.sheet-handle{width:40px;height:4px;border-radius:99px;background:#cbd5e1;margin:8px auto 2px;flex:0 0 auto}
+.sheet-handle{width:40px;height:4px;border-radius:99px;background:var(--line);margin:8px auto 2px;flex:0 0 auto}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px 6px 16px;flex:0 0 auto}
 .sheet-head h2{font-size:17px;font-weight:800}
 .sheet-body{padding:6px 16px calc(24px + env(safe-area-inset-bottom));overflow-y:auto;flex:1 1 auto;-webkit-overflow-scrolling:touch}
@@ -86,12 +88,12 @@ h1,h2,p{margin:0}
 .seg.wide{width:100%}
 .seg.wide button{flex:1}
 .cat-grid{display:flex;flex-wrap:wrap;gap:8px}
-.err{color:#b91c1c;font-size:13px;font-weight:600;margin:0 0 10px;min-height:0}
+.err{color:var(--danger-text);font-size:13px;font-weight:600;margin:0 0 10px;min-height:0}
 .err:empty{display:none}
 .btn{width:100%;min-height:50px;border-radius:14px;border:0;background:var(--primary);color:#fff;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .btn:active{filter:brightness(.94)}
 .btn.secondary{background:var(--soft);color:var(--text);border:1px solid var(--line)}
-.btn.danger{background:#fee2e2;color:#b91c1c}
+.btn.danger{background:var(--danger-bg);color:var(--danger-text)}
 .stack{display:flex;flex-direction:column;gap:8px}
 .cat-row{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
 .cat-row .dot{width:14px;height:14px;margin-top:0}
@@ -102,17 +104,14 @@ h1,h2,p{margin:0}
 .add-cat input[type="text"]{flex:1;min-width:0;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:14px;outline:none}
 .add-cat input[type="text"]:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
 .add-cat button{height:46px;padding:0 16px;flex:0 0 auto;border-radius:12px;background:var(--text);color:var(--card);font-size:13px;font-weight:700}
-/* Tab bar */
 .tabbar{position:fixed;bottom:0;left:0;right:0;z-index:35;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -2px 12px rgba(15,23,42,.05);padding-bottom:env(safe-area-inset-bottom)}
 .tabbar-inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;min-height:56px;color:var(--muted);background:none;border:0;cursor:pointer}
 .tab.active{color:var(--primary)}
 .tab svg{width:22px;height:22px}
 .tab .tab-label{font-size:11px;font-weight:600}
-/* Activity */
 .search-wrap{margin:6px 0 10px}
 .act-meta{font-size:12px;color:var(--muted);padding:0 4px 10px;font-variant-numeric:tabular-nums}
-/* Insights */
 .trend-chart{width:100%;height:180px;display:block}
 .trend-bar{fill:var(--primary);opacity:.55;cursor:pointer;transition:opacity .15s}
 .trend-bar.current{opacity:1}
@@ -135,7 +134,6 @@ h1,h2,p{margin:0}
 .stat-value .sub{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px}
 .trend-up{color:var(--danger)}
 .trend-down{color:var(--ok)}
-/* Cat budget */
 .cat-budget-item{padding:10px 0;border-bottom:1px solid var(--line)}
 .cat-budget-item:last-child{border-bottom:0}
 .cat-budget-row{display:flex;align-items:center;gap:10px}
@@ -143,11 +141,9 @@ h1,h2,p{margin:0}
 .cat-budget-name{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mini-input{width:110px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);padding:0 10px;font-size:13px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
 .mini-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
-.cat-budget-bar{height:4px;border-radius:99px;background:var(--track);margin-top:6px;overflow:hidden}
-.cat-budget-bar>i{display:block;height:100%;border-radius:99px;transition:width .25s}
 .cat-budget-meta{font-size:11px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
 .about{font-size:12px;color:var(--muted);text-align:center;padding:18px 8px 4px;line-height:1.6}
-.tab-panel[hidden]{display:none!important}
+.tab-panel[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -332,6 +328,9 @@ var IDR='IDR';
 var USD='USD';
 var TABS=['overview','activity','insights','settings'];
 var FALLBACK_CAT={name:'Tanpa kategori',color:'#94a3b8'};
+var THEME_COLOR_LIGHT='#f1f5f9';
+var THEME_COLOR_DARK='#0f172a';
+var SHEET_ANIM_MS=260;
 
 var DEFAULT_CATS=[
   {id:'makan',name:'Makan',color:'#ef4444'},
@@ -428,10 +427,11 @@ function normalize(p){
   if(p.catBudgets&&typeof p.catBudgets==='object'&&!Array.isArray(p.catBudgets)){
     var ids=new Set(d.categories.map(function(c){return c.id;}));
     var cb={};
-    Object.keys(p.catBudgets).forEach(function(k){
+    for(var k in p.catBudgets){
+      if(!Object.prototype.hasOwnProperty.call(p.catBudgets,k))continue;
       var v=Number(p.catBudgets[k]);
       if(ids.has(k)&&isFinite(v)&&v>=0)cb[k]=v;
-    });
+    }
     d.catBudgets=cb;
   }
   if(p.lastTab&&TABS.indexOf(p.lastTab)>=0)d.lastTab=p.lastTab;
@@ -463,7 +463,6 @@ var activityFilters={q:'',range:'month',cat:ALL,sort:'date-desc'};
 var $=function(id){return document.getElementById(id);};
 var summaryEl=$('summary');
 var chipsEl=$('chips');
-var monthLabelEl=$('monthLabel');
 var overviewListEl=$('overviewList');
 var overlay=$('overlay');
 var sheetForm=$('sheetForm');
@@ -491,8 +490,10 @@ var donutChart=$('donutChart');
 var donutLegend=$('donutLegend');
 var statList=$('statList');
 var yearlyList=$('yearlyList');
+var panelsAll=document.querySelectorAll('.tab-panel');
+var tabsAll=document.querySelectorAll('.tab');
 
-/* ---------- Theme ---------- */
+/* theme */
 var mediaDark=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
 function applyTheme(){
   var t=state.theme;
@@ -502,24 +503,22 @@ function applyTheme(){
   else dark=!!(mediaDark&&mediaDark.matches);
   document.body.classList.toggle('theme-dark',dark);
   var meta=document.querySelector('meta[name="theme-color"]');
-  if(meta)meta.setAttribute('content',dark?'#0f172a':'#f1f5f9');
+  if(meta)meta.setAttribute('content',dark?THEME_COLOR_DARK:THEME_COLOR_LIGHT);
 }
 if(mediaDark&&mediaDark.addEventListener){
   mediaDark.addEventListener('change',function(){if(state.theme==='system')applyTheme();});
 }
 
-/* ---------- Tab navigation ---------- */
+/* tabs */
 function switchTab(name){
   if(TABS.indexOf(name)<0)name='overview';
   activeTab=name;
   if(state.lastTab!==name){state.lastTab=name;save();}
-  var panels=document.querySelectorAll('.tab-panel');
-  for(var i=0;i<panels.length;i++){panels[i].hidden=panels[i].dataset.tab!==name;}
-  var tabs=document.querySelectorAll('.tab');
-  for(var j=0;j<tabs.length;j++){
-    var on=tabs[j].dataset.tab===name;
-    tabs[j].classList.toggle('active',on);
-    tabs[j].setAttribute('aria-selected',String(on));
+  for(var i=0;i<panelsAll.length;i++){panelsAll[i].hidden=panelsAll[i].dataset.tab!==name;}
+  for(var j=0;j<tabsAll.length;j++){
+    var on=tabsAll[j].dataset.tab===name;
+    tabsAll[j].classList.toggle('active',on);
+    tabsAll[j].setAttribute('aria-selected',String(on));
   }
   renderActiveTab();
 }
@@ -530,7 +529,7 @@ function renderActiveTab(){
   else renderSettings();
 }
 
-/* ---------- Contexts ---------- */
+/* contexts */
 function buildContext(){
   var rate=state.exchangeRate;
   var base=state.baseCurrency;
@@ -583,13 +582,10 @@ function buildActivityContext(){
   for(var i=0;i<state.transactions.length;i++){
     var t=state.transactions[i];
     var cat=catMap.get(t.categoryId)||FALLBACK_CAT;
-    // range
     if(activityFilters.range==='month'){if(t.date.slice(0,7)!==mKey)continue;}
     else if(activityFilters.range==='7d'){if(t.date<limit7)continue;}
     else if(activityFilters.range==='30d'){if(t.date<limit30)continue;}
-    // cat
     if(activityFilters.cat!==ALL&&t.categoryId!==activityFilters.cat)continue;
-    // q
     if(q){
       var hay=(t.note||'')+' '+cat.name;
       if(hay.toLowerCase().indexOf(q)<0)continue;
@@ -601,7 +597,6 @@ function buildActivityContext(){
       cat:cat
     });
   }
-  // sort
   var s=activityFilters.sort;
   items.sort(function(a,b){
     if(s==='date-asc')return a.date===b.date?(a.id<b.id?-1:1):(a.date<b.date?-1:1);
@@ -627,13 +622,12 @@ function buildInsightsContext(){
   var catMap=new Map(state.categories.map(function(c){return [c.id,c];}));
   var all=state.transactions.map(function(t){
     return {
-      date:t.date,currency:t.currency,amount:t.amount,categoryId:t.categoryId,
+      id:t.id,date:t.date,currency:t.currency,amount:t.amount,categoryId:t.categoryId,
       baseAmount:toBase(t.amount,t.currency,rate,base),
       cat:catMap.get(t.categoryId)||FALLBACK_CAT
     };
   });
 
-  // 6 bulan terakhir
   var months=[];
   var d0=new Date(view.y,view.m,1);
   for(var i=5;i>=0;i--){
@@ -644,52 +638,58 @@ function buildInsightsContext(){
       label:dd.toLocaleDateString('id-ID',{month:'short'})
     });
   }
-  var monthlyTotals=months.map(function(mo){
-    var s=0;
-    for(var i=0;i<all.length;i++){if(all[i].date.slice(0,7)===mo.key)s+=all[i].baseAmount;}
-    return s;
-  });
+  var monthlyTotals=[0,0,0,0,0,0];
+  var monthsIndex={};
+  for(var mi=0;mi<months.length;mi++)monthsIndex[months[mi].key]=mi;
 
-  // Bulan aktif
   var curKey=monthKey();
+  var prevD=new Date(view.y,view.m-1,1);
+  var prevKey=monthKeyOf(prevD.getFullYear(),prevD.getMonth());
+  var yearStr=String(view.y);
+
   var curByCat=new Map();
   var curTotal=0;
-  var curTxs=[];
+  var biggest=null;
+  var prevTotal=0;
+  var yearTotal=0;
+  var yearMonthsSet=new Set();
+
   for(var j=0;j<all.length;j++){
-    if(all[j].date.slice(0,7)===curKey){
-      curTotal+=all[j].baseAmount;
-      curByCat.set(all[j].categoryId,(curByCat.get(all[j].categoryId)||0)+all[j].baseAmount);
-      curTxs.push(all[j]);
+    var t=all[j];
+    var mKey=t.date.slice(0,7);
+    var yStr=t.date.slice(0,4);
+
+    if(mKey in monthsIndex)monthlyTotals[monthsIndex[mKey]]+=t.baseAmount;
+
+    if(mKey===curKey){
+      curTotal+=t.baseAmount;
+      curByCat.set(t.categoryId,(curByCat.get(t.categoryId)||0)+t.baseAmount);
+      if(!biggest||t.baseAmount>biggest.baseAmount)biggest=t;
+    }
+
+    if(mKey===prevKey)prevTotal+=t.baseAmount;
+
+    if(yStr===yearStr){
+      yearTotal+=t.baseAmount;
+      yearMonthsSet.add(mKey);
     }
   }
+
+  var validCatIds=new Set(state.categories.map(function(c){return c.id;}));
   var curCats=[];
-  curByCat.forEach(function(amt,id){curCats.push({cat:catMap.get(id)||FALLBACK_CAT,amt:amt});});
+  curByCat.forEach(function(amt,id){
+    var c=catMap.get(id);
+    curCats.push({
+      cat:c||FALLBACK_CAT,
+      amt:amt,
+      categoryId:(c&&validCatIds.has(c.id))?c.id:null
+    });
+  });
   curCats.sort(function(a,b){return b.amt-a.amt;});
 
   var daysInMonth=new Date(view.y,view.m+1,0).getDate();
   var dailyAvg=curTotal/daysInMonth;
-
-  var biggest=null;
-  for(var k=0;k<curTxs.length;k++){if(!biggest||curTxs[k].baseAmount>biggest.baseAmount)biggest=curTxs[k];}
-
   var topCat=curCats[0]||null;
-
-  // Bulan sebelumnya
-  var prevD=new Date(view.y,view.m-1,1);
-  var prevKey=monthKeyOf(prevD.getFullYear(),prevD.getMonth());
-  var prevTotal=0;
-  for(var p=0;p<all.length;p++){if(all[p].date.slice(0,7)===prevKey)prevTotal+=all[p].baseAmount;}
-
-  // Tahun
-  var yearStr=String(view.y);
-  var yearMonthsSet=new Set();
-  var yearTotal=0;
-  for(var y=0;y<all.length;y++){
-    if(all[y].date.slice(0,4)===yearStr){
-      yearTotal+=all[y].baseAmount;
-      yearMonthsSet.add(all[y].date.slice(0,7));
-    }
-  }
   var yearAvg=yearMonthsSet.size?yearTotal/yearMonthsSet.size:0;
 
   return {
@@ -701,11 +701,10 @@ function buildInsightsContext(){
   };
 }
 
-/* ---------- Render: Overview ---------- */
+/* overview */
 function renderOverview(){
   var ctx=buildContext();
   renderSummary(ctx);
-  renderChips(ctx);
   renderRecentList(ctx);
 }
 function renderSummary(ctx){
@@ -743,18 +742,33 @@ function renderSummary(ctx){
   summaryEl.innerHTML='<div class="card">'+
     '<div class="sum-label">Total pengeluaran · '+esc(monthLabelText())+'</div>'+
     '<div class="sum-total">'+formatBase(total)+'</div>'+
-    budgetHTML+breadownFix(breakdownHTML)+
+    budgetHTML+breakdownHTML+
     '</div>';
 }
-function breadownFix(s){return s;}
 
-function renderChips(ctx){
+function renderOverviewChips(){
   var items=[{id:ALL,name:'Semua',color:null}].concat(state.categories);
   chipsEl.innerHTML=items.map(function(c){
     return '<button type="button" class="chip'+(c.id===filterCat?' active':'')+'" data-cat="'+esc(c.id)+'" aria-pressed="'+(c.id===filterCat)+'">'+
     (c.color?'<span class="dot" style="background:'+c.color+';margin-top:0"></span>':'')+
     esc(c.name)+'</button>';
   }).join('');
+}
+
+function itemHTML(t){
+  var converted=t.currency!==state.baseCurrency?' · ≈ '+formatBase(t.baseAmount):'';
+  var notePart=t.note?esc(t.note)+' · ':'';
+  return '<div class="item">'+
+    '<span class="item-accent" style="background:'+t.cat.color+'"></span>'+
+    '<button type="button" class="item-body" data-act="edit" data-id="'+esc(t.id)+'" aria-label="Ubah transaksi '+esc(t.cat.name)+' '+formatMoney(t.amount,t.currency)+'">'+
+      '<span class="item-line1">'+
+        '<span class="item-cat">'+esc(t.cat.name)+'</span>'+
+        '<span class="item-amt">'+formatMoney(t.amount,t.currency)+'</span>'+
+      '</span>'+
+      '<span class="item-line2">'+notePart+formatDateShort(t.date)+converted+'</span>'+
+    '</button>'+
+    '<button type="button" class="item-del" data-act="del" data-id="'+esc(t.id)+'" aria-label="Hapus transaksi '+esc(t.cat.name)+'">✕</button>'+
+  '</div>';
 }
 
 function renderRecentList(ctx){
@@ -767,31 +781,13 @@ function renderRecentList(ctx){
   var recent=all.slice(0,5);
   var hasMore=all.length>5;
   var html='';
-  for(var i=0;i<recent.length;i++){
-    var t=recent[i];
-    var converted=t.currency!==state.baseCurrency?' · ≈ '+formatBase(t.baseAmount):'';
-    var notePart=t.note?esc(t.note)+' · ':'';
-    html+='<div class="item">'+
-      '<span class="item-accent" style="background:'+t.cat.color+'"></span>'+
-      '<button type="button" class="item-body" data-act="edit" data-id="'+esc(t.id)+'" aria-label="Ubah transaksi '+esc(t.cat.name)+' '+formatMoney(t.amount,t.currency)+'">'+
-        '<span class="item-line1">'+
-          '<span class="item-cat">'+esc(t.cat.name)+'</span>'+
-          '<span class="item-amt">'+formatMoney(t.amount,t.currency)+'</span>'+
-        '</span>'+
-        '<span class="item-line2">'+notePart+formatDateShort(t.date)+converted+'</span>'+
-      '</button>'+
-      '<button type="button" class="item-del" data-act="del" data-id="'+esc(t.id)+'" aria-label="Hapus transaksi '+esc(t.cat.name)+'">✕</button>'+
-    '</div>';
-  }
-  if(hasMore){
-    html+='<button type="button" class="see-all" data-act="see-all">Lihat semua →</button>';
-  }
+  for(var i=0;i<recent.length;i++)html+=itemHTML(recent[i]);
+  if(hasMore)html+='<button type="button" class="see-all" data-act="see-all">Lihat semua →</button>';
   overviewListEl.innerHTML=html;
 }
 
-/* ---------- Render: Activity ---------- */
+/* activity */
 function renderActivity(){
-  // chips range
   var ranges=[
     {id:'month',label:'Bulan ini'},
     {id:'7d',label:'7 hari'},
@@ -802,7 +798,6 @@ function renderActivity(){
     return '<button type="button" class="chip'+(r.id===activityFilters.range?' active':'')+'" data-range="'+r.id+'" aria-pressed="'+(r.id===activityFilters.range)+'">'+r.label+'</button>';
   }).join('');
 
-  // chips cat
   var cats=[{id:ALL,name:'Semua',color:null}].concat(state.categories);
   actCat.innerHTML=cats.map(function(c){
     return '<button type="button" class="chip'+(c.id===activityFilters.cat?' active':'')+'" data-cat="'+esc(c.id)+'" aria-pressed="'+(c.id===activityFilters.cat)+'">'+
@@ -810,7 +805,6 @@ function renderActivity(){
     esc(c.name)+'</button>';
   }).join('');
 
-  // chips sort
   var sorts=[
     {id:'date-desc',label:'Terbaru'},
     {id:'date-asc',label:'Terlama'},
@@ -836,28 +830,13 @@ function renderActivity(){
     var dayTotal=0;
     for(var i=0;i<items.length;i++)dayTotal+=items[i].baseAmount;
     html+='<div class="group"><div class="group-head"><span>'+esc(dateLabel(date))+'</span><span class="g-total">'+formatBase(dayTotal)+'</span></div>';
-    for(var j=0;j<items.length;j++){
-      var t=items[j];
-      var converted=t.currency!==state.baseCurrency?' · ≈ '+formatBase(t.baseAmount):'';
-      var notePart=t.note?esc(t.note)+' · ':'';
-      html+='<div class="item">'+
-        '<span class="item-accent" style="background:'+t.cat.color+'"></span>'+
-        '<button type="button" class="item-body" data-act="edit" data-id="'+esc(t.id)+'" aria-label="Ubah transaksi '+esc(t.cat.name)+' '+formatMoney(t.amount,t.currency)+'">'+
-          '<span class="item-line1">'+
-            '<span class="item-cat">'+esc(t.cat.name)+'</span>'+
-            '<span class="item-amt">'+formatMoney(t.amount,t.currency)+'</span>'+
-          '</span>'+
-          '<span class="item-line2">'+notePart+formatDateShort(t.date)+converted+'</span>'+
-        '</button>'+
-        '<button type="button" class="item-del" data-act="del" data-id="'+esc(t.id)+'" aria-label="Hapus transaksi '+esc(t.cat.name)+'">✕</button>'+
-      '</div>';
-    }
+    for(var j=0;j<items.length;j++)html+=itemHTML(items[j]);
     html+='</div>';
   });
   actList.innerHTML=html;
 }
 
-/* ---------- Render: Insights ---------- */
+/* insights */
 function renderInsights(){
   var ctx=buildInsightsContext();
   renderTrend(ctx);
@@ -874,17 +853,17 @@ function renderTrend(ctx){
   var n=ctx.months.length;
   var slot=chartW/n;
   var barW=Math.min(30,slot-14);
-  var max=Math.max.apply(null,ctx.monthlyTotals.concat([1]));
+  var max=1;
+  for(var i=0;i<ctx.monthlyTotals.length;i++)if(ctx.monthlyTotals[i]>max)max=ctx.monthlyTotals[i];
 
   var parts=[];
-  // gridline baseline
   parts.push('<line x1="'+padL+'" y1="'+(padTop+chartH)+'" x2="'+(W-padR)+'" y2="'+(padTop+chartH)+'" stroke="var(--line)" stroke-width="1"/>');
 
-  for(var i=0;i<n;i++){
-    var mo=ctx.months[i];
-    var val=ctx.monthlyTotals[i];
+  for(var j=0;j<n;j++){
+    var mo=ctx.months[j];
+    var val=ctx.monthlyTotals[j];
     var h=Math.max(2,(val/max)*chartH);
-    var x=padL+slot*i+(slot-barW)/2;
+    var x=padL+slot*j+(slot-barW)/2;
     var y=padTop+chartH-h;
     var isCurrent=(mo.y===view.y&&mo.m===view.m);
     parts.push('<rect class="trend-bar'+(isCurrent?' current':'')+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW+'" height="'+h.toFixed(1)+'" rx="4" data-y="'+mo.y+'" data-m="'+mo.m+'"/>');
@@ -908,16 +887,19 @@ function renderDonut(ctx){
   }else{
     var acc=0;
     for(var i=0;i<ctx.curCats.length;i++){
-      var cat=ctx.curCats[i];
-      var pct=cat.amt/total;
+      var it=ctx.curCats[i];
+      var pct=it.amt/total;
       var dash=pct*c;
-      parts.push('<circle class="donut-slice" cx="90" cy="90" r="60" fill="none" stroke="'+cat.cat.color+'" stroke-width="24" stroke-dasharray="'+dash.toFixed(2)+' '+(c-dash).toFixed(2)+'" stroke-dashoffset="'+(-acc).toFixed(2)+'" transform="rotate(-90 90 90)" data-cat="'+esc(cat.cat.id||cat.cat.name)+'"/>');
+      var hasCat=!!it.categoryId;
+      var cls=hasCat?' class="donut-slice"':'';
+      var catAttr=hasCat?' data-cat="'+esc(it.categoryId)+'"':'';
+      parts.push('<circle'+cls+' cx="90" cy="90" r="60" fill="none" stroke="'+it.cat.color+'" stroke-width="24" stroke-dasharray="'+dash.toFixed(2)+' '+(c-dash).toFixed(2)+'" stroke-dashoffset="'+(-acc).toFixed(2)+'" transform="rotate(-90 90 90)"'+catAttr+'/>');
       acc+=dash;
     }
-    legendHTML=ctx.curCats.slice(0,6).map(function(cat){
-      var pct=cat.amt/total*100;
-      return '<div class="legend-row"><span class="dot" style="background:'+cat.cat.color+'"></span>'+
-        '<span class="legend-name">'+esc(cat.cat.name)+'</span>'+
+    legendHTML=ctx.curCats.slice(0,6).map(function(it){
+      var pct=it.amt/total*100;
+      return '<div class="legend-row"><span class="dot" style="background:'+it.cat.color+'"></span>'+
+        '<span class="legend-name">'+esc(it.cat.name)+'</span>'+
         '<span class="legend-pct">'+pct.toFixed(1)+'%</span></div>';
     }).join('');
   }
@@ -962,7 +944,7 @@ function statRow(label,value){
   return '<div class="stat-item"><span class="stat-label">'+label+'</span><span class="stat-value">'+value+'</span></div>';
 }
 
-/* ---------- Render: Settings ---------- */
+/* settings */
 function renderSettings(){
   sBudget.value=String(state.budget);
   sRate.value=String(state.exchangeRate);
@@ -997,45 +979,60 @@ function renderSettingsCats(){
       '<button type="button" class="del-btn" data-del="'+esc(c.id)+'" aria-label="Hapus kategori '+esc(c.name)+'">✕</button></div>';
   }).join('')||'<p class="budget-sub">Belum ada kategori.</p>';
 }
-function renderCatBudgets(){
-  var catMap=new Map(state.categories.map(function(c){return [c.id,c];}));
-  // hitung spending per kategori bulan ini
-  var spend=new Map();
-  var curKey=monthKey();
+
+function catBudgetItemHTML(c,b,used){
+  var bVal=(typeof b==='number'&&b>0)?b:'';
+  var progressHTML='';
+  if(typeof b==='number'&&b>0){
+    var pct=Math.min(100,(used/b)*100);
+    var color=pct>=100?'var(--danger)':(pct>=75?'var(--warn)':c.color);
+    progressHTML='<div class="cat-budget-bar"><i style="width:'+pct+'%;background:'+color+'"></i></div>'+
+      '<div class="cat-budget-meta">'+formatBase(used)+' / '+formatBase(b)+' ('+Math.round(pct)+'%)</div>';
+  }
+  return '<div class="cat-budget-item">'+
+    '<div class="cat-budget-row">'+
+      '<span class="dot" style="background:'+c.color+'"></span>'+
+      '<span class="cat-budget-name">'+esc(c.name)+'</span>'+
+      '<input type="text" inputmode="decimal" class="mini-input" data-catbudget="'+esc(c.id)+'" placeholder="—" value="'+(bVal===''?'':bVal)+'" aria-label="Budget '+esc(c.name)+'"/>'+
+    '</div>'+
+    progressHTML+
+  '</div>';
+}
+function computeCatUsed(catId){
   var rate=state.exchangeRate,base=state.baseCurrency;
+  var curKey=monthKey();
+  var used=0;
   for(var i=0;i<state.transactions.length;i++){
     var t=state.transactions[i];
     if(t.date.slice(0,7)!==curKey)continue;
-    var v=toBase(t.amount,t.currency,rate,base);
-    spend.set(t.categoryId,(spend.get(t.categoryId)||0)+v);
+    if(t.categoryId!==catId)continue;
+    used+=toBase(t.amount,t.currency,rate,base);
   }
-
+  return used;
+}
+function renderCatBudgets(){
   var html='';
-  for(var j=0;j<state.categories.length;j++){
-    var c=state.categories[j];
+  for(var i=0;i<state.categories.length;i++){
+    var c=state.categories[i];
     var b=state.catBudgets[c.id];
-    var bVal=(typeof b==='number'&&b>0)?b:'';
-    var used=spend.get(c.id)||0;
-    var progressHTML='';
-    if(typeof b==='number'&&b>0){
-      var pct=Math.min(100,(used/b)*100);
-      var color=pct>=100?'var(--danger)':(pct>=75?'var(--warn)':c.color);
-      progressHTML='<div class="cat-budget-bar"><i style="width:'+pct+'%;background:'+color+'"></i></div>'+
-        '<div class="cat-budget-meta">'+formatBase(used)+' / '+formatBase(b)+' ('+Math.round(pct)+'%)</div>';
-    }
-    html+='<div class="cat-budget-item">'+
-      '<div class="cat-budget-row">'+
-        '<span class="dot" style="background:'+c.color+'"></span>'+
-        '<span class="cat-budget-name">'+esc(c.name)+'</span>'+
-        '<input type="text" inputmode="decimal" class="mini-input" data-catbudget="'+esc(c.id)+'" placeholder="—" value="'+(bVal=== ''?'':bVal)+'" aria-label="Budget '+esc(c.name)+'"/>'+
-      '</div>'+
-      progressHTML+
-    '</div>';
+    var used=computeCatUsed(c.id);
+    html+=catBudgetItemHTML(c,b,used);
   }
   sCatBudgetsEl.innerHTML=html;
 }
+function updateCatBudgetProgress(catId){
+  var inp=sCatBudgetsEl.querySelector('[data-catbudget="'+catId+'"]');
+  if(!inp)return;
+  var item=inp.closest('.cat-budget-item');
+  if(!item)return;
+  var cat=state.categories.find(function(c){return c.id===catId;});
+  if(!cat)return;
+  var b=state.catBudgets[catId];
+  var used=computeCatUsed(catId);
+  item.outerHTML=catBudgetItemHTML(cat,b,used);
+}
 
-/* ---------- Form (sheet) ---------- */
+/* sheet */
 function closeSheets(){
   if(openSheetEl){openSheetEl.classList.remove('open');openSheetEl=null;}
   overlay.classList.remove('open');
@@ -1087,7 +1084,7 @@ function openForm(tx){
   syncFormCatsActive();
   renderFormCurrency();
   openSheet(sheetForm);
-  if(!tx)setTimeout(function(){fAmount.focus();},260);
+  if(!tx)setTimeout(function(){fAmount.focus();},SHEET_ANIM_MS);
 }
 
 function parseAmountInput(str,currency){
@@ -1160,7 +1157,7 @@ function deleteTx(id){
   renderActiveTab();
 }
 
-/* ---------- Kategori & Budget ---------- */
+/* category */
 function addCategory(){
   var nameEl=$('newCatName');
   var name=nameEl.value.trim();
@@ -1173,8 +1170,9 @@ function addCategory(){
   nameEl.value='';
   save();
   rebuildFormCatsCache();
-  renderSettings();
-  // juga refresh overview chips jika nanti pindah tab
+  renderOverviewChips();
+  renderSettingsCats();
+  renderCatBudgets();
 }
 function removeCategory(id){
   if(state.categories.length<=1){alert('Minimal harus ada satu kategori.');return;}
@@ -1185,7 +1183,9 @@ function removeCategory(id){
   delete state.catBudgets[id];
   save();
   rebuildFormCatsCache();
-  renderSettings();
+  renderOverviewChips();
+  renderSettingsCats();
+  renderCatBudgets();
 }
 
 function onCatBudgetInput(e){
@@ -1193,45 +1193,15 @@ function onCatBudgetInput(e){
   if(!inp)return;
   var id=inp.dataset.catbudget;
   var raw=inp.value.trim();
-  if(!raw){delete state.catBudgets[id];saveDebounced();updateCatBudgetProgress(id);return;}
+  if(!raw){delete state.catBudgets[id];save();updateCatBudgetProgress(id);return;}
   var v=parseFloat(raw);
-  if(!isFinite(v)||v<0){delete state.catBudgets[id];saveDebounced();return;}
+  if(!isFinite(v)||v<0){delete state.catBudgets[id];save();updateCatBudgetProgress(id);return;}
   state.catBudgets[id]=v;
-  saveDebounced();
+  save();
   updateCatBudgetProgress(id);
 }
-function updateCatBudgetProgress(catId){
-  var inp=sCatBudgetsEl.querySelector('[data-catbudget="'+catId+'"]');
-  if(!inp)return;
-  var item=inp.closest('.cat-budget-item');
-  if(!item)return;
-  var b=state.catBudgets[catId];
-  var cat=state.categories.find(function(c){return c.id===catId;});
-  if(!cat)return;
-  // hapus progress lama
-  var oldBar=item.querySelector('.cat-budget-bar');
-  var oldMeta=item.querySelector('.cat-budget-meta');
-  if(oldBar)oldBar.remove();
-  if(oldMeta)oldMeta.remove();
-  if(typeof b!=='number'||b<=0)return;
-  var rate=state.exchangeRate,base=state.baseCurrency;
-  var curKey=monthKey();
-  var used=0;
-  for(var i=0;i<state.transactions.length;i++){
-    var t=state.transactions[i];
-    if(t.date.slice(0,7)!==curKey)continue;
-    if(t.categoryId!==catId)continue;
-    used+=toBase(t.amount,t.currency,rate,base);
-  }
-  var pct=Math.min(100,(used/b)*100);
-  var color=pct>=100?'var(--danger)':(pct>=75?'var(--warn)':cat.color);
-  var frag=document.createElement('div');
-  frag.innerHTML='<div class="cat-budget-bar"><i style="width:'+pct+'%;background:'+color+'"></i></div>'+
-    '<div class="cat-budget-meta">'+formatBase(used)+' / '+formatBase(b)+' ('+Math.round(pct)+'%)</div>';
-  while(frag.firstChild)item.appendChild(frag.firstChild);
-}
 
-/* ---------- Export/Import/Reset ---------- */
+/* data */
 function exportJSON(){
   var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   var url=URL.createObjectURL(blob);
@@ -1270,6 +1240,7 @@ function importJSON(file){
       }
       save();
       rebuildFormCatsCache();
+      renderOverviewChips();
       applyTheme();
       closeSheets();
       switchTab('overview');
@@ -1289,19 +1260,18 @@ function resetAll(){
   activityFilters={q:'',range:'month',cat:ALL,sort:'date-desc'};
   save();
   rebuildFormCatsCache();
+  renderOverviewChips();
   applyTheme();
   closeSheets();
   switchTab('overview');
 }
 
-/* ---------- Events ---------- */
-// Tab bar
+/* events */
 document.querySelector('.tabbar').addEventListener('click',function(e){
   var t=e.target.closest('.tab');
   if(!t)return;
   switchTab(t.dataset.tab);
 });
-// Keyboard tab shortcuts (1-4)
 document.addEventListener('keydown',function(e){
   if(e.target&&e.target.matches&&e.target.matches('input,textarea,select'))return;
   if(e.key==='1')switchTab('overview');
@@ -1311,7 +1281,6 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='Escape')closeSheets();
 });
 
-// Overview month nav
 $('prevMonth').addEventListener('click',function(){
   var m=view.m-1,y=view.y;
   if(m<0){m=11;y--;}
@@ -1325,21 +1294,17 @@ $('nextMonth').addEventListener('click',function(){
   renderOverview();
 });
 
-// FAB
 $('fab').addEventListener('click',function(){openForm(null);});
 
-// Overlay & close
 overlay.addEventListener('click',closeSheets);
 var closeBtns=document.querySelectorAll('[data-close]');
 for(var cb=0;cb<closeBtns.length;cb++)closeBtns[cb].addEventListener('click',closeSheets);
 
-// Summary "Atur sekarang"
 summaryEl.addEventListener('click',function(e){
   var btn=e.target.closest('[data-act="open-settings"]');
   if(btn)switchTab('settings');
 });
 
-// Overview chips filter
 chipsEl.addEventListener('click',function(e){
   var btn=e.target.closest('[data-cat]');
   if(!btn)return;
@@ -1351,11 +1316,9 @@ chipsEl.addEventListener('click',function(e){
     b.classList.toggle('active',on);
     b.setAttribute('aria-pressed',String(on));
   }
-  var ctx=buildContext();
-  renderRecentList(ctx);
+  renderRecentList(buildContext());
 });
 
-// Overview list actions
 overviewListEl.addEventListener('click',function(e){
   var btn=e.target.closest('button[data-act]');
   if(!btn)return;
@@ -1374,7 +1337,6 @@ overviewListEl.addEventListener('click',function(e){
   }
 });
 
-// Activity filters
 actSearch.addEventListener('input',debounce(function(){
   activityFilters.q=actSearch.value;
   renderActivity();
@@ -1398,7 +1360,6 @@ actSort.addEventListener('click',function(e){
   renderActivity();
 });
 
-// Activity list
 actList.addEventListener('click',function(e){
   var btn=e.target.closest('button[data-act]');
   if(!btn)return;
@@ -1411,14 +1372,12 @@ actList.addEventListener('click',function(e){
   }
 });
 
-// Insights: tap bar → pindah ke Overview bulan tsb
 trendChart.addEventListener('click',function(e){
   var r=e.target.closest('[data-y]');
   if(!r)return;
   view={y:parseInt(r.dataset.y,10),m:parseInt(r.dataset.m,10)};
   switchTab('overview');
 });
-// Insights: tap donut slice → ke Activity dengan filter kategori
 donutChart.addEventListener('click',function(e){
   var s=e.target.closest('[data-cat]');
   if(!s)return;
@@ -1427,7 +1386,6 @@ donutChart.addEventListener('click',function(e){
   switchTab('activity');
 });
 
-// Form events
 formCats.addEventListener('click',function(e){
   var btn=e.target.closest('[data-cat]');
   if(!btn)return;
@@ -1443,7 +1401,6 @@ sheetForm.querySelector('.seg').addEventListener('click',function(e){
 $('txForm').addEventListener('submit',submitForm);
 formDelete.addEventListener('click',function(){if(editingId)deleteTx(editingId);});
 
-// Settings handlers
 sBudget.addEventListener('change',function(){
   var v=parseFloat(sBudget.value);
   state.budget=(isFinite(v)&&v>=0)?v:0;
@@ -1479,8 +1436,7 @@ sCats.addEventListener('click',function(e){
   var btn=e.target.closest('[data-del]');
   if(btn)removeCategory(btn.dataset.del);
 });
-sCatBudgetsEl.addEventListener('input',debounce(onCatBudgetInput,150));
-sCatBudgetsEl.addEventListener('blur',onCatBudgetInput,true);
+sCatBudgetsEl.addEventListener('change',onCatBudgetInput);
 $('btnAddCat').addEventListener('click',addCategory);
 $('newCatName').addEventListener('keydown',function(e){
   if(e.key==='Enter'){e.preventDefault();addCategory();}
@@ -1494,12 +1450,12 @@ $('fileInput').addEventListener('change',function(e){
 });
 $('btnReset').addEventListener('click',resetAll);
 
-// Flush on unload
 window.addEventListener('beforeunload',save);
 
-/* ---------- Init ---------- */
+/* init */
 applyTheme();
 rebuildFormCatsCache();
+renderOverviewChips();
 activeTab=TABS.indexOf(state.lastTab)>=0?state.lastTab:'overview';
 switchTab(activeTab);
 })();
