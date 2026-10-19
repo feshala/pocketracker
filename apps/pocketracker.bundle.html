@@ -1,323 +1,523 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#f1f5f9"/>
+<meta name="theme-color" content="#f8fafc"/>
 <title>Pocket Tracker</title>
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--ok:#16a34a;--warn:#f59e0b;--danger:#dc2626;--danger-bg:#fee2e2;--danger-text:#b91c1c;--track:#e8edf3;--soft:#f8fafc}
-body.theme-dark{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--line:#334155;--track:#334155;--soft:#1e293b;--danger-bg:#7f1d1d;--danger-text:#fecaca}
+:root{
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;
+  --radius-card:16px;--radius-ctrl:12px;--radius-pill:999px;
+  --motion:200ms cubic-bezier(.4,0,.2,1);
+  --bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;
+  --primary:#2563eb;--ok:#16a34a;--warn:#f59e0b;--danger:#dc2626;
+  --track:#e8edf3;--soft:#f1f5f9;--danger-bg:#fee2e2;--danger-text:#b91c1c;
+}
+body.theme-dark{
+  --bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--line:#334155;
+  --track:#334155;--soft:#1e293b;--danger-bg:#7f1d1d;--danger-text:#fecaca;
+}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--text);font-size:14px;line-height:1.4;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-input{font:inherit;color:inherit}
-h1,h2,p{margin:0}
-.app{max-width:480px;margin:0 auto;padding:8px 12px calc(140px + env(safe-area-inset-bottom))}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 12px}
-.topbar h1{font-size:18px;font-weight:800;letter-spacing:-.3px}
-.panel-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 4px 8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
-.sum-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.sum-total{font-size:30px;font-weight:800;letter-spacing:-1px;margin:4px 0 8px;word-break:break-word;font-variant-numeric:tabular-nums}
-.bar{height:8px;border-radius:999px;background:var(--track);overflow:hidden;margin:6px 0 8px}
-.bar>i{display:block;height:100%;border-radius:999px;transition:width .25s ease}
-.budget-meta{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}
-.budget-meta strong{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
-.budget-sub{font-size:12px;color:var(--muted);margin-top:4px}
-.link{color:var(--primary);font-weight:700;text-decoration:underline;padding:6px 2px;min-height:32px;display:inline-block}
-.breakdown{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
-.bd-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.bd-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0}
-.dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;margin-top:4px}
-.bd-main{flex:1;min-width:0}
-.bd-line{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.bd-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bd-amt{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-.bd-mini,.cat-budget-bar{height:4px;border-radius:99px;background:var(--track);overflow:hidden}
-.bd-mini{margin-top:5px}
-.cat-budget-bar{margin-top:6px}
-.bd-mini>i,.cat-budget-bar>i{display:block;height:100%;border-radius:99px}
-.monthnav{display:flex;align-items:center;gap:8px;margin:16px 0 8px}
-.nav-btn{width:44px;height:44px;flex:0 0 auto;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;display:grid;place-items:center;line-height:1}
-.nav-btn:active{background:var(--soft)}
-.month-label{flex:1;text-align:center;font-weight:700;font-size:15px;text-transform:capitalize}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+input,select{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+
+.app{max-width:480px;margin:0 auto;padding:var(--space-2) var(--space-3) calc(140px + env(safe-area-inset-bottom))}
+
+.hero-label{font-size:12px;font-weight:500;color:var(--muted);margin-bottom:var(--space-1)}
+.hero-value{font-size:clamp(26px,8vw,34px);font-weight:800;letter-spacing:-1.2px;font-variant-numeric:tabular-nums;line-height:1.1;word-break:break-word}
+.section-title{font-size:13px;font-weight:700;color:var(--text);margin:var(--space-4) 0 var(--space-2)}
+.meta{font-size:12px;font-weight:500;color:var(--muted)}
+
+.monthbar{display:flex;align-items:center;gap:2px;padding:var(--space-1) 0 var(--space-2)}
+.monthbar .mnv{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;color:var(--muted);font-size:18px;line-height:1;flex:0 0 auto}
+.monthbar .mnv:active{background:var(--soft)}
+.monthbar .month-label{flex:1;text-align:center;font-size:13px;font-weight:700;color:var(--muted);text-transform:capitalize;letter-spacing:.3px}
+
+.hero{padding:var(--space-2) 0 var(--space-4)}
+.bar{height:6px;border-radius:var(--radius-pill);background:var(--track);overflow:hidden;margin:var(--space-2) 0 var(--space-1)}
+.bar>i{display:block;height:100%;border-radius:var(--radius-pill);background:var(--bar-c,var(--ok));width:var(--bar-w,0%);transition:width var(--motion)}
+.budget-line{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.budget-line.over{color:var(--danger)}
+.link{color:var(--primary);font-weight:600;text-decoration:underline;padding:2px}
+
+.cat-stack{margin-top:var(--space-3)}
+.cat-stack-bar{display:flex;height:8px;border-radius:var(--radius-pill);overflow:hidden;background:var(--track)}
+.cat-stack-bar>i{display:block;height:100%}
+.cat-stack-legend{margin-top:var(--space-2);display:flex;flex-direction:column;gap:4px}
+.legend-row{display:flex;align-items:center;gap:var(--space-2);font-size:12px}
+.legend-row .ln{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.legend-row .ln.muted{color:var(--muted);font-weight:500}
+.legend-row .la{font-variant-numeric:tabular-nums;font-weight:600;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted)}
+
+.chips{display:flex;gap:var(--space-2);overflow-x:auto;padding:var(--space-1) 0 var(--space-2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .chips::-webkit-scrollbar{display:none}
-.chip,.chip-sm{flex:0 0 auto;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:0 16px}
-.chip-sm{padding:0 14px;border-color:var(--line);font-weight:600;gap:7px}
+.chip,.chip-sm{flex:0 0 auto;min-height:36px;border-radius:var(--radius-pill);border:1px solid var(--line);background:var(--card);font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:0 12px;color:var(--muted)}
+.chip-sm{padding:0 12px;font-size:12px}
 .chip.active,.chip-sm.active{background:var(--text);color:var(--card);border-color:var(--text)}
-.group{margin-bottom:14px}
-.group-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 4px 6px;font-size:12px;font-weight:700;color:var(--muted)}
-.group-head .g-total{font-variant-numeric:tabular-nums}
-.item{display:flex;align-items:stretch;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
-.item-accent{width:4px;flex:0 0 auto}
-.item-body{flex:1;min-width:0;display:block;text-align:left;padding:11px 6px 11px 12px}
+.chip .dot{width:6px;height:6px;margin-top:0}
+
+.item-list{margin:var(--space-2) 0 var(--space-3)}
+.item{border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item-body{display:block;width:100%;text-align:left;padding:var(--space-3) 2px;min-height:56px}
 .item-body:active{background:var(--soft)}
-.item-line1{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.item-cat{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item-amt{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-.item-line2{display:block;font-size:12px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item-del{width:44px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);color:var(--danger);font-size:15px;display:grid;place-items:center}
-.item-del:active{background:rgba(220,38,38,.15)}
-.empty{text-align:center;padding:34px 16px;color:var(--muted);font-size:14px}
-.empty strong{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
-.see-all{display:block;width:100%;padding:14px;margin-top:4px;color:var(--primary);font-weight:700;font-size:13px;text-align:center;border-radius:12px}
+.item-line1{display:flex;justify-content:space-between;gap:var(--space-2);align-items:baseline}
+.item-cat{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-amt{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.item-line2{display:block;font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{text-align:center;padding:var(--space-6) var(--space-4);color:var(--muted);font-size:13px}
+.empty strong{display:block;color:var(--text);font-size:14px;margin-bottom:4px}
+.see-all{display:block;width:100%;padding:var(--space-3);margin-top:var(--space-1);color:var(--primary);font-weight:600;font-size:13px;text-align:center;border-radius:var(--radius-ctrl)}
 .see-all:active{background:var(--soft)}
-.fab{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom));right:max(16px,calc(50vw - 240px + 16px));width:60px;height:60px;border-radius:20px;background:var(--primary);color:#fff;font-size:30px;line-height:1;display:grid;place-items:center;box-shadow:0 10px 26px rgba(37,99,235,.42);z-index:30;transition:transform .15s ease}
+
+.fab{
+  position:fixed;bottom:calc(72px + env(safe-area-inset-bottom) + 8px);
+  right:max(16px,calc(50vw - 240px + 16px));
+  width:52px;height:52px;border-radius:16px;background:var(--primary);color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 8px 20px rgba(37,99,235,.38);
+  z-index:30;transition:transform var(--motion);
+}
 .fab:active{transform:scale(.94)}
 .fab.hidden{display:none}
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s ease}
+
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity var(--motion)}
 .overlay.open{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:480px;z-index:50;background:var(--card);border-radius:20px 20px 0 0;transform:translate(-50%,101%);transition:transform .26s cubic-bezier(.4,0,.2,1);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 -8px 32px rgba(15,23,42,.16)}
+.sheet{
+  position:fixed;left:50%;bottom:0;width:100%;max-width:480px;z-index:50;
+  background:var(--card);border-radius:20px 20px 0 0;
+  transform:translate(-50%,101%);
+  transition:transform 260ms cubic-bezier(.4,0,.2,1);
+  max-height:92vh;display:flex;flex-direction:column;
+  box-shadow:0 -8px 32px rgba(15,23,42,.16);
+}
 .sheet.open{transform:translate(-50%,0)}
-.sheet-handle{width:40px;height:4px;border-radius:99px;background:var(--line);margin:8px auto 2px;flex:0 0 auto}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px 6px 16px;flex:0 0 auto}
-.sheet-head h2{font-size:17px;font-weight:800}
-.sheet-body{padding:6px 16px calc(24px + env(safe-area-inset-bottom));overflow-y:auto;flex:1 1 auto;-webkit-overflow-scrolling:touch}
-.field{margin-bottom:14px}
-.field>label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
-.input{width:100%;height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:15px;outline:none}
-.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
-.amount-row{display:flex;gap:8px}
-.amount-row .input{flex:1;min-width:0;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
-.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;flex:0 0 auto;background:var(--card)}
-.seg button{min-width:56px;height:48px;font-size:13px;font-weight:700;color:var(--muted);border-right:1px solid var(--line)}
+.sheet-handle{width:36px;height:4px;border-radius:var(--radius-pill);background:var(--line);margin:8px auto 2px;flex:0 0 auto}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);padding:var(--space-1) var(--space-3) var(--space-1) var(--space-4);flex:0 0 auto}
+.sheet-title{font-size:15px;font-weight:700}
+.icon-btn{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.icon-btn:active{background:var(--soft)}
+.sheet-body{padding:var(--space-2) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));overflow-y:auto;flex:1 1 auto;-webkit-overflow-scrolling:touch}
+.sheet-actions{position:sticky;bottom:0;background:var(--card);padding:var(--space-2) 0 var(--space-1);margin-top:var(--space-2);display:flex;flex-direction:column;gap:var(--space-2)}
+
+.field{margin-bottom:var(--space-3)}
+.field>label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.input{width:100%;height:44px;border-radius:var(--radius-ctrl);border:1px solid var(--line);background:var(--card);padding:0 var(--space-3);font-size:14px;outline:none;transition:border-color var(--motion)}
+.input:focus{border-color:var(--primary)}
+.amount-row{display:flex;gap:var(--space-2)}
+.amount-row .input{flex:1;min-width:0;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;height:48px}
+.seg{display:flex;border:1px solid var(--line);border-radius:var(--radius-ctrl);overflow:hidden;flex:0 0 auto;background:var(--card)}
+.seg button{min-width:48px;height:48px;padding:0 10px;font-size:13px;font-weight:700;color:var(--muted);border-right:1px solid var(--line)}
 .seg button:last-child{border-right:0}
 .seg button.active{background:var(--primary);color:#fff}
+.seg.small button{height:36px;min-width:44px;font-size:12px;padding:0 10px}
 .seg.wide{width:100%}
 .seg.wide button{flex:1}
-.cat-grid{display:flex;flex-wrap:wrap;gap:8px}
-.err{color:var(--danger-text);font-size:13px;font-weight:600;margin:0 0 10px;min-height:0}
+.cat-grid{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.err{color:var(--danger-text);font-size:12px;font-weight:600;margin:0 0 var(--space-2);min-height:0}
 .err:empty{display:none}
-.btn{width:100%;min-height:50px;border-radius:14px;border:0;background:var(--primary);color:#fff;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn{width:100%;min-height:48px;border-radius:var(--radius-ctrl);border:0;background:var(--primary);color:#fff;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn:active{filter:brightness(.94)}
 .btn.secondary{background:var(--soft);color:var(--text);border:1px solid var(--line)}
 .btn.danger{background:var(--danger-bg);color:var(--danger-text)}
-.stack{display:flex;flex-direction:column;gap:8px}
-.cat-row{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
-.cat-row .dot{width:14px;height:14px;margin-top:0}
-.cat-row .name{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cat-row .del-btn{width:44px;height:44px;color:var(--danger);font-size:15px;display:grid;place-items:center;border-radius:10px}
-.add-cat{display:flex;gap:8px;align-items:center;margin-top:12px}
-.add-cat input[type="color"]{width:46px;height:46px;flex:0 0 auto;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
-.add-cat input[type="text"]{flex:1;min-width:0;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:14px;outline:none}
-.add-cat input[type="text"]:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
-.add-cat button{height:46px;padding:0 16px;flex:0 0 auto;border-radius:12px;background:var(--text);color:var(--card);font-size:13px;font-weight:700}
-.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:35;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -2px 12px rgba(15,23,42,.05);padding-bottom:env(safe-area-inset-bottom)}
+.btn.small{min-height:40px;font-size:13px}
+.stack{display:flex;flex-direction:column;gap:var(--space-2)}
+
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:35;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 .tabbar-inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;min-height:56px;color:var(--muted);background:none;border:0;cursor:pointer}
 .tab.active{color:var(--primary)}
 .tab svg{width:22px;height:22px}
 .tab .tab-label{font-size:11px;font-weight:600}
-.search-wrap{margin:6px 0 10px}
-.act-meta{font-size:12px;color:var(--muted);padding:0 4px 10px;font-variant-numeric:tabular-nums}
-.trend-chart{width:100%;height:180px;display:block}
-.trend-bar{fill:var(--primary);opacity:.55;cursor:pointer;transition:opacity .15s}
+
+.search-wrap{
+  display:flex;align-items:center;gap:0;height:40px;padding:0;
+  border:1px solid var(--line);border-radius:var(--radius-pill);background:var(--card);
+  width:40px;overflow:hidden;transition:width var(--motion),padding var(--motion),gap var(--motion);
+  cursor:text;margin:var(--space-1) 0 var(--space-2);
+}
+.search-wrap.expanded,.search-wrap.has-value,.search-wrap:focus-within{width:100%;padding:0 var(--space-3);gap:var(--space-2)}
+.search-icon{flex:0 0 40px;height:40px;display:grid;place-items:center;color:var(--muted);transition:flex-basis var(--motion)}
+.search-wrap.expanded .search-icon,.search-wrap.has-value .search-icon,.search-wrap:focus-within .search-icon{flex-basis:16px}
+.search-input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14px;opacity:0;transition:opacity var(--motion)}
+.search-wrap.expanded .search-input,.search-wrap.has-value .search-input,.search-wrap:focus-within .search-input{opacity:1}
+.search-wrap:focus-within{border-color:var(--primary)}
+.filter-row{display:flex;gap:var(--space-2);margin-bottom:var(--space-2);flex-wrap:wrap}
+.filter-btn{flex:0 0 auto;min-height:36px;padding:0 12px;font-size:12px;font-weight:600;color:var(--muted);background:var(--soft);border-radius:var(--radius-pill);display:inline-flex;align-items:center;gap:4px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.filter-btn.active{color:var(--primary);background:rgba(37,99,235,.08)}
+.act-meta{font-size:12px;color:var(--muted);padding:0 2px var(--space-2);font-variant-numeric:tabular-nums}
+.group{margin-bottom:var(--space-3)}
+.group-head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-2);padding:var(--space-2) 2px;font-size:12px;font-weight:600;color:var(--muted);background:var(--bg);position:sticky;top:0;z-index:1;margin:0 -2px}
+.group-head .g-total{font-variant-numeric:tabular-nums}
+
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);padding:var(--space-3);margin-bottom:var(--space-3)}
+.pcard-head{font-size:13px;font-weight:700;color:var(--text);margin-bottom:var(--space-2)}
+.trend-chart{width:100%;height:160px;display:block}
+.trend-bar{fill:var(--primary);opacity:.5;cursor:pointer;transition:opacity var(--motion)}
 .trend-bar.current{opacity:1}
 .trend-bar:active{opacity:.85}
-.trend-label{font-size:11px;fill:var(--muted);text-anchor:middle;font-family:inherit}
-.trend-value{font-size:9px;fill:var(--muted);text-anchor:middle;font-family:inherit}
-.donut-wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
-.donut-chart{display:block;width:170px;height:170px;flex:0 0 auto}
+.trend-label{font-size:10px;fill:var(--muted);text-anchor:middle;font-family:inherit}
+.donut-wrap{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;justify-content:center}
+.donut-chart{display:block;width:160px;height:160px;flex:0 0 auto}
 .donut-slice{cursor:pointer}
 .donut-slice:active{opacity:.75}
 .donut-legend{flex:1;min-width:140px;display:flex;flex-direction:column;gap:6px}
-.legend-row{display:flex;align-items:center;gap:8px;font-size:12px}
-.legend-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.legend-pct{color:var(--muted);font-variant-numeric:tabular-nums}
+.legend-pct{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px}
+@media (max-width:380px){
+  .donut-legend{flex-basis:100%;min-width:0}
+}
 .stat-list{display:flex;flex-direction:column}
-.stat-item{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.stat-item{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--line)}
 .stat-item:last-child{border-bottom:0}
-.stat-label{font-size:12px;color:var(--muted);font-weight:600}
-.stat-value{font-size:14px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
-.stat-value .sub{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px}
+.stat-label{font-size:12px;color:var(--muted);font-weight:500}
+.stat-value{font-size:13px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.stat-value .sub{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:2px}
 .trend-up{color:var(--danger)}
 .trend-down{color:var(--ok)}
-.cat-budget-item{padding:10px 0;border-bottom:1px solid var(--line)}
+
+/* === Monthly Report Table === */
+.mr-details>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text);padding:0;min-height:24px}
+.mr-details>summary::-webkit-details-marker{display:none}
+.mr-details>summary::after{content:'▸';color:var(--muted);font-size:14px;transition:transform var(--motion);display:inline-block}
+.mr-details[open]>summary{margin-bottom:var(--space-2)}
+.mr-details[open]>summary::after{content:'▾'}
+.monthly-report-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 calc(-1 * var(--space-3));padding:0 var(--space-3) var(--space-1);scrollbar-width:thin}
+.monthly-report-table{width:100%;min-width:400px;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+.monthly-report-table th,.monthly-report-table td{border:1px solid var(--line);padding:3px 4px;height:26px;text-align:center}
+.monthly-report-table th{background:var(--soft);font-weight:700;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.4px}
+.monthly-report-table td.mr-day{background:var(--soft);font-weight:700;color:var(--text);width:28px;min-width:28px;font-size:10px}
+.monthly-report-table td.mr-val{text-align:right;color:var(--text);font-weight:600;background:rgba(37,99,235,.04)}
+.monthly-report-table td.mr-empty{color:var(--muted);opacity:.3}
+.monthly-report-table td.mr-total{background:rgba(37,99,235,.06);font-weight:700;text-align:right;color:var(--primary)}
+.monthly-report-table td.mr-total.mr-empty{color:var(--muted);font-weight:500;background:rgba(37,99,235,.02)}
+.monthly-report-table tr.mr-today td.mr-day{background:var(--primary);color:#fff}
+.monthly-report-table tfoot td{background:var(--soft);font-weight:800;border-top:2px solid var(--line);height:28px}
+.monthly-report-table tfoot td.mr-total{background:rgba(37,99,235,.12);color:var(--primary);font-weight:800}
+.mr-empty-note{font-size:11px;color:var(--muted);text-align:center;padding:var(--space-3) 0 var(--space-1)}
+
+.profile-head{padding:var(--space-3) 0 var(--space-2);border-bottom:1px solid var(--line);margin-bottom:var(--space-2)}
+.profile-row{display:flex;gap:var(--space-2);align-items:center;margin-top:var(--space-2)}
+.profile-row .row-input{flex:1;text-align:left;width:auto}
+.profile-row .btn{flex:0 0 auto;width:auto;padding:0 14px;min-height:36px}
+
+.accordion{margin-top:var(--space-1)}
+.acc-group{border-bottom:1px solid var(--line)}
+.acc-head{display:flex;align-items:center;justify-content:space-between;width:100%;padding:var(--space-3) 2px;font-size:13px;font-weight:700;color:var(--text);text-align:left;min-height:48px}
+.acc-head::after{content:'';width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform var(--motion);margin-right:4px;flex:0 0 auto}
+.acc-group.open .acc-head::after{transform:rotate(-135deg)}
+.acc-body{display:none;padding:0 2px var(--space-3)}
+.acc-group.open .acc-body{display:block}
+.row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--line);min-height:44px}
+.row:last-child{border-bottom:0}
+.row-label{font-size:13px;font-weight:500;color:var(--text);flex:1;min-width:0}
+.row-label.muted{color:var(--muted);font-size:12px}
+.row-btn{width:100%;text-align:left;color:var(--primary);font-weight:600;font-size:13px;padding:var(--space-2) 0;min-height:44px;display:flex;align-items:center;justify-content:space-between}
+.row-btn::after{content:'›';color:var(--muted);font-size:16px}
+.row-input{width:130px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);padding:0 10px;font-size:13px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
+.row-input:focus{border-color:var(--primary)}
+.about{font-size:11px;color:var(--muted);text-align:center;padding:var(--space-4) var(--space-2) var(--space-2);line-height:1.6}
+
+.cat-row{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) 0;border-bottom:1px solid var(--line)}
+.cat-row .dot{width:12px;height:12px;margin-top:0}
+.cat-row .name{flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-row .del-btn{width:36px;height:36px;color:var(--muted);display:grid;place-items:center;border-radius:8px;font-size:13px}
+.cat-row .del-btn:active{background:var(--soft);color:var(--danger)}
+.add-cat{display:flex;gap:var(--space-2);align-items:center;margin-top:var(--space-3)}
+.add-cat input[type="color"]{width:44px;height:44px;flex:0 0 auto;padding:3px;border:1px solid var(--line);border-radius:var(--radius-ctrl);background:var(--card)}
+.add-cat input[type="text"]{flex:1;min-width:0;height:44px;border-radius:var(--radius-ctrl);border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:13px;outline:none}
+.add-cat input[type="text"]:focus{border-color:var(--primary)}
+.add-cat button{height:44px;padding:0 16px;flex:0 0 auto;border-radius:var(--radius-ctrl);background:var(--text);color:var(--card);font-size:13px;font-weight:700}
+.sub-title{font-size:12px;font-weight:700;color:var(--muted);margin:var(--space-4) 0 var(--space-2)}
+.cat-budget-item{padding:var(--space-2) 0;border-bottom:1px solid var(--line)}
 .cat-budget-item:last-child{border-bottom:0}
-.cat-budget-row{display:flex;align-items:center;gap:10px}
-.cat-budget-row .dot{width:12px;height:12px;margin-top:0}
-.cat-budget-name{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini-input{width:110px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);padding:0 10px;font-size:13px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
-.mini-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+.cat-budget-row{display:flex;align-items:center;gap:var(--space-2)}
+.cat-budget-row .dot{width:10px;height:10px;margin-top:0}
+.cat-budget-name{flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-input{width:110px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--card);padding:0 10px;font-size:12px;text-align:right;outline:none;font-variant-numeric:tabular-nums}
+.mini-input:focus{border-color:var(--primary)}
+.cat-budget-bar{height:4px;border-radius:var(--radius-pill);background:var(--track);margin-top:6px;overflow:hidden}
+.cat-budget-bar>i{display:block;height:100%;border-radius:var(--radius-pill);transition:width var(--motion)}
 .cat-budget-meta{font-size:11px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
-.about{font-size:12px;color:var(--muted);text-align:center;padding:18px 8px 4px;line-height:1.6}
+
+.opt-row{display:flex;align-items:center;gap:var(--space-2);width:100%;padding:var(--space-3) 2px;font-size:14px;font-weight:500;text-align:left;border-bottom:1px solid var(--line);min-height:48px;color:var(--text)}
+.opt-row:last-child{border-bottom:0}
+.opt-row.selected{color:var(--primary);font-weight:700}
+.opt-row.selected::after{content:'✓';margin-left:auto;color:var(--primary);font-weight:700}
+
+.snackbar{position:fixed;left:50%;transform:translate(-50%,120%);width:calc(100% - 32px);max-width:448px;bottom:calc(72px + env(safe-area-inset-bottom) + 12px);background:#1e293b;color:#f8fafc;border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:60;font-size:13px;box-shadow:0 8px 24px rgba(15,23,42,.3);transition:transform var(--motion),opacity var(--motion);opacity:0;pointer-events:none}
+.snackbar.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.snackbar button{color:#60a5fa;font-weight:700;padding:4px 8px;white-space:nowrap;font-size:13px}
+.toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:12px;font-weight:500;z-index:70;opacity:0;pointer-events:none;transition:transform var(--motion),opacity var(--motion);max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+
 .tab-panel[hidden]{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
 
 <div class="app">
-  <header class="topbar">
-    <h1>Pocket Tracker</h1>
-  </header>
-
   <main>
-    <section class="tab-panel" data-tab="overview" id="tabOverview">
-      <section id="summary" aria-label="Ringkasan pengeluaran"></section>
-      <nav class="monthnav" aria-label="Navigasi bulan">
-        <button class="nav-btn" id="prevMonth" aria-label="Bulan sebelumnya">‹</button>
+    <section class="tab-panel" data-tab="summary" id="tabSummary">
+      <div class="monthbar" aria-label="Month navigation">
+        <button class="mnv" id="prevMonth" aria-label="Previous month">‹</button>
         <div class="month-label" id="monthLabel" aria-live="polite"></div>
-        <button class="nav-btn" id="nextMonth" aria-label="Bulan berikutnya">›</button>
-      </nav>
-      <div class="chips" id="chips" role="group" aria-label="Filter kategori"></div>
-      <section id="overviewList" aria-label="Transaksi terbaru"></section>
-    </section>
-
-    <section class="tab-panel" data-tab="activity" id="tabActivity" hidden>
-      <div class="search-wrap">
-        <input class="input" id="actSearch" type="search" placeholder="Cari catatan atau kategori..." autocomplete="off" aria-label="Cari transaksi"/>
+        <button class="mnv" id="nextMonth" aria-label="Next month">›</button>
       </div>
-      <div class="chips" id="actRange" role="group" aria-label="Rentang tanggal"></div>
-      <div class="chips" id="actCat" role="group" aria-label="Filter kategori"></div>
-      <div class="chips" id="actSort" role="group" aria-label="Urutkan"></div>
-      <div class="act-meta" id="actMeta"></div>
-      <section id="actList" aria-label="Daftar transaksi"></section>
+      <section id="summary" aria-label="Spending summary"></section>
+      <div class="chips" id="chips" role="group" aria-label="Category filter"></div>
+      <section id="overviewList" aria-label="Recent transactions"></section>
     </section>
 
-    <section class="tab-panel" data-tab="insights" id="tabInsights" hidden>
-      <h2 class="panel-title">Tren 6 Bulan</h2>
-      <div class="card"><svg id="trendChart" class="trend-chart" viewBox="0 0 300 180" role="img" aria-label="Grafik tren pengeluaran 6 bulan"></svg></div>
-      <h2 class="panel-title">Komposisi Kategori</h2>
-      <div class="card">
+    <section class="tab-panel" data-tab="history" id="tabHistory" hidden>
+      <div class="search-wrap" id="searchWrap">
+        <span class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input class="search-input" id="actSearch" type="search" placeholder="Search transactions" autocomplete="off" aria-label="Search transactions"/>
+      </div>
+      <div class="filter-row" role="group" aria-label="Transaction filters">
+        <button type="button" class="filter-btn" id="filterRangeBtn" data-filter="range">This month ▾</button>
+        <button type="button" class="filter-btn" id="filterCatBtn" data-filter="cat">Category ▾</button>
+        <button type="button" class="filter-btn" id="filterSortBtn" data-filter="sort">Newest ▾</button>
+      </div>
+      <div class="act-meta" id="actMeta"></div>
+      <section id="actList" aria-label="Transaction list"></section>
+    </section>
+
+    <section class="tab-panel" data-tab="reports" id="tabReports" hidden>
+      <div class="pcard">
+        <div class="pcard-head">6-Month Trend</div>
+        <svg id="trendChart" class="trend-chart" viewBox="0 0 300 160" role="img" aria-label="6-month spending trend chart"></svg>
+      </div>
+
+      <!-- === Monthly Report Table (NEW) === -->
+      <div class="pcard">
+        <details class="mr-details" id="mrDetails" open>
+          <summary>Monthly Report · <span id="monthlyReportLabel"></span></summary>
+          <div class="monthly-report-wrap">
+            <table class="monthly-report-table" aria-label="Monthly spending by day and weekday">
+              <thead>
+                <tr>
+                  <th>Day</th><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="monthlyReportBody"></tbody>
+              <tfoot id="monthlyReportFoot"></tfoot>
+            </table>
+          </div>
+        </details>
+      </div>
+      <!-- === End Monthly Report Table === -->
+
+      <div class="pcard">
+        <div class="pcard-head">Category Breakdown</div>
         <div class="donut-wrap">
-          <svg id="donutChart" class="donut-chart" viewBox="0 0 180 180" role="img" aria-label="Diagram komposisi kategori"></svg>
+          <svg id="donutChart" class="donut-chart" viewBox="0 0 160 160" role="img" aria-label="Category breakdown chart"></svg>
           <div class="donut-legend" id="donutLegend"></div>
         </div>
       </div>
-      <h2 class="panel-title">Statistik Bulan Ini</h2>
-      <div class="card"><div class="stat-list" id="statList"></div></div>
-      <h2 class="panel-title">Ringkasan Tahunan</h2>
-      <div class="card"><div class="stat-list" id="yearlyList"></div></div>
+      <div class="pcard">
+        <div class="pcard-head">This Month's Stats</div>
+        <div class="stat-list" id="statList"></div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-head">Yearly Summary</div>
+        <div class="stat-list" id="yearlyList"></div>
+      </div>
     </section>
 
-    <section class="tab-panel" data-tab="settings" id="tabSettings" hidden>
-      <h2 class="panel-title">Umum</h2>
-      <div class="card">
-        <div class="field">
-          <label id="baseLabel">Base currency (mata uang tampilan)</label>
-          <div class="seg wide" id="sBase" role="group" aria-labelledby="baseLabel">
-            <button type="button" data-base="IDR">IDR</button>
-            <button type="button" data-base="USD">USD</button>
+    <section class="tab-panel" data-tab="options" id="tabOptions" hidden>
+      <div class="profile-head">
+        <label class="row-label" for="profileSelect">Profile</label>
+        <div class="profile-row">
+          <select id="profileSelect" class="row-input">
+            <option value="default">Default</option>
+          </select>
+          <button type="button" class="btn secondary small" id="btnAppSettings">Settings</button>
+        </div>
+      </div>
+      <div class="accordion" id="accordion">
+        <div class="acc-group open" data-acc="umum">
+          <button class="acc-head" aria-expanded="true">General</button>
+          <div class="acc-body">
+            <div class="row">
+              <span class="row-label">Base currency</span>
+              <div class="seg small" id="sBase" role="group" aria-label="Base currency">
+                <button type="button" data-base="IDR">IDR</button>
+                <button type="button" data-base="USD">USD</button>
+              </div>
+            </div>
+            <div class="row">
+              <span class="row-label">Exchange rate 1 USD</span>
+              <input class="row-input" id="sRate" type="number" inputmode="decimal" step="any" min="1" aria-label="Exchange rate"/>
+            </div>
           </div>
         </div>
-        <div class="field" style="margin-bottom:0">
-          <label for="sRate">Nilai tukar: 1 USD = ... IDR</label>
-          <input class="input" id="sRate" type="number" inputmode="decimal" step="any" min="1"/>
-        </div>
-      </div>
 
-      <h2 class="panel-title">Budget</h2>
-      <div class="card">
-        <div class="field">
-          <label for="sBudget">Budget bulanan (<span id="sBudgetCur">IDR</span>)</label>
-          <input class="input" id="sBudget" type="number" inputmode="decimal" step="any" min="0"/>
+        <div class="acc-group" data-acc="budget">
+          <button class="acc-head" aria-expanded="false">Budget</button>
+          <div class="acc-body">
+            <div class="row">
+              <span class="row-label">Monthly budget (<span id="sBudgetCur">IDR</span>)</span>
+              <input class="row-input" id="sBudget" type="number" inputmode="decimal" step="any" min="0" aria-label="Monthly budget"/>
+            </div>
+            <div class="row">
+              <button class="row-btn" type="button" id="btnOpenBudget">Budget per category</button>
+            </div>
+          </div>
         </div>
-        <div class="field" style="margin-bottom:0">
-          <label>Budget per kategori (opsional)</label>
-          <div id="sCatBudgets"></div>
-        </div>
-      </div>
 
-      <h2 class="panel-title">Kategori</h2>
-      <div class="card">
-        <div id="sCats" role="group" aria-label="Daftar kategori"></div>
-        <div class="add-cat">
-          <input type="color" id="newCatColor" value="#0ea5e9" aria-label="Warna kategori baru"/>
-          <input type="text" id="newCatName" placeholder="Kategori baru" maxlength="20" aria-label="Nama kategori baru"/>
-          <button type="button" id="btnAddCat">Tambah</button>
+        <div class="acc-group" data-acc="kategori">
+          <button class="acc-head" aria-expanded="false">Categories</button>
+          <div class="acc-body">
+            <div class="row">
+              <button class="row-btn" type="button" id="btnOpenCategories">Manage categories</button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <h2 class="panel-title">Tampilan</h2>
-      <div class="card">
-        <div class="field" style="margin-bottom:0">
-          <label id="themeLabel">Tema</label>
-          <div class="seg wide" id="sTheme" role="group" aria-labelledby="themeLabel">
-            <button type="button" data-theme="light">Terang</button>
-            <button type="button" data-theme="system">Sistem</button>
-            <button type="button" data-theme="dark">Gelap</button>
+        <div class="acc-group" data-acc="tampilan">
+          <button class="acc-head" aria-expanded="false">Display</button>
+          <div class="acc-body">
+            <div class="row">
+              <span class="row-label">Theme</span>
+              <div class="seg small" id="sTheme" role="group" aria-label="Theme">
+                <button type="button" data-theme="light">Light</button>
+                <button type="button" data-theme="system">System</button>
+                <button type="button" data-theme="dark">Dark</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-group" data-acc="data">
+          <button class="acc-head" aria-expanded="false">Data</button>
+          <div class="acc-body">
+            <div class="stack">
+              <button class="btn secondary small" type="button" id="btnExport">Export JSON</button>
+              <button class="btn secondary small" type="button" id="btnImport">Import JSON</button>
+              <button class="btn danger small" type="button" id="btnReset">Reset all data</button>
+            </div>
+            <input type="file" id="fileInput" accept="application/json,.json" hidden/>
           </div>
         </div>
       </div>
-
-      <h2 class="panel-title">Data</h2>
-      <div class="card">
-        <div class="stack">
-          <button class="btn secondary" type="button" id="btnExport">⬇ Export JSON</button>
-          <button class="btn secondary" type="button" id="btnImport">⬆ Import JSON</button>
-          <button class="btn danger" type="button" id="btnReset">🗑 Reset semua data</button>
-        </div>
-        <input type="file" id="fileInput" accept="application/json,.json" hidden/>
-      </div>
-
-      <p class="about">Pocket Tracker v0.3 · Data tersimpan lokal di browser ini</p>
+      <p class="about">Pocket Tracker v0.6 · Data stored locally in this browser</p>
     </section>
   </main>
 </div>
 
-<button class="fab" id="fab" aria-label="Tambah transaksi">+</button>
+<button class="fab" id="fab" aria-label="Add transaction">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
 <div class="overlay" id="overlay"></div>
 
 <div class="sheet" id="sheetForm" role="dialog" aria-modal="true" aria-labelledby="formTitle">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
-    <h2 id="formTitle">Tambah Transaksi</h2>
-    <button class="nav-btn" data-close aria-label="Tutup formulir">✕</button>
+    <h2 class="sheet-title" id="formTitle">Add Transaction</h2>
+    <button class="icon-btn" data-close aria-label="Close form">✕</button>
   </div>
   <div class="sheet-body">
     <form id="txForm" novalidate>
       <div class="field">
-        <label for="fAmount">Nominal</label>
+        <label for="fAmount">Amount</label>
         <div class="amount-row">
           <input class="input" id="fAmount" type="text" inputmode="decimal" placeholder="0" autocomplete="off"/>
-          <div class="seg" role="group" aria-label="Mata uang transaksi">
+          <div class="seg" role="group" aria-label="Transaction currency">
             <button type="button" data-cur="IDR">IDR</button>
             <button type="button" data-cur="USD">USD</button>
           </div>
         </div>
       </div>
       <div class="field">
-        <label id="catVisibleLabel">Kategori</label>
+        <label id="catVisibleLabel">Category</label>
         <div class="cat-grid" id="formCats" role="group" aria-labelledby="catVisibleLabel"></div>
       </div>
       <div class="field">
-        <label for="fDate">Tanggal</label>
+        <label for="fDate">Date</label>
         <input class="input" id="fDate" type="date"/>
       </div>
       <div class="field">
-        <label for="fNote">Catatan (opsional)</label>
-        <input class="input" id="fNote" type="text" maxlength="80" placeholder="mis. makan siang" autocomplete="off"/>
+        <label for="fNote">Note (optional)</label>
+        <input class="input" id="fNote" type="text" maxlength="80" placeholder="e.g. lunch" autocomplete="off"/>
       </div>
       <p class="err" id="formError" role="alert"></p>
-      <button class="btn" type="submit" id="formSubmit">Simpan</button>
-      <button class="btn danger" type="button" id="formDelete" style="margin-top:8px;display:none">Hapus Transaksi</button>
+      <div class="sheet-actions">
+        <button class="btn" type="submit" id="formSubmit">Save</button>
+        <button class="btn danger" type="button" id="formDelete" style="display:none">Delete Transaction</button>
+      </div>
     </form>
   </div>
 </div>
 
-<nav class="tabbar" role="tablist" aria-label="Navigasi utama">
+<div class="sheet" id="sheetFilter" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h2 class="sheet-title" id="filterTitle">Filter</h2>
+    <button class="icon-btn" data-close aria-label="Close filter">✕</button>
+  </div>
+  <div class="sheet-body" id="sheetFilterBody"></div>
+</div>
+
+<div class="sheet" id="sheetCategory" role="dialog" aria-modal="true" aria-labelledby="catTitle">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h2 class="sheet-title" id="catTitle">Manage Categories</h2>
+    <button class="icon-btn" data-close aria-label="Close categories">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div id="sCats" role="group" aria-label="Category list"></div>
+    <div class="add-cat">
+      <input type="color" id="newCatColor" value="#0ea5e9" aria-label="New category color"/>
+      <input type="text" id="newCatName" placeholder="New category" maxlength="20" aria-label="New category name"/>
+      <button type="button" id="btnAddCat">Add</button>
+    </div>
+    <div class="sub-title">Budget per category</div>
+    <div id="sCatBudgets"></div>
+  </div>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="Main navigation">
   <div class="tabbar-inner">
-    <button class="tab" data-tab="overview" role="tab" aria-selected="true" aria-controls="tabOverview">
+    <button class="tab" data-tab="summary" role="tab" aria-selected="true" aria-controls="tabSummary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
-      <span class="tab-label">Overview</span>
+      <span class="tab-label">Summary</span>
     </button>
-    <button class="tab" data-tab="activity" role="tab" aria-selected="false" aria-controls="tabActivity">
+    <button class="tab" data-tab="history" role="tab" aria-selected="false" aria-controls="tabHistory">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
-      <span class="tab-label">Activity</span>
+      <span class="tab-label">History</span>
     </button>
-    <button class="tab" data-tab="insights" role="tab" aria-selected="false" aria-controls="tabInsights">
+    <button class="tab" data-tab="reports" role="tab" aria-selected="false" aria-controls="tabReports">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12A9 9 0 1 1 12 3v9h9z"/><path d="M12 3a9 9 0 0 1 9 9"/></svg>
-      <span class="tab-label">Insights</span>
+      <span class="tab-label">Reports</span>
     </button>
-    <button class="tab" data-tab="settings" role="tab" aria-selected="false" aria-controls="tabSettings">
+    <button class="tab" data-tab="options" role="tab" aria-selected="false" aria-controls="tabOptions">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span class="tab-label">Settings</span>
+      <span class="tab-label">Options</span>
     </button>
   </div>
 </nav>
+
+<div class="snackbar" id="snackbar" role="status" aria-live="polite">
+  <span id="snackbarMsg"></span>
+  <button type="button" id="snackbarBtn">Undo</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
@@ -327,19 +527,19 @@ var KEY='pocket-tracker-v1';
 var ALL='all';
 var IDR='IDR';
 var USD='USD';
-var TABS=['overview','activity','insights','settings'];
-var FALLBACK_CAT={name:'Tanpa kategori',color:'#94a3b8'};
-var THEME_COLOR_LIGHT='#f1f5f9';
+var TABS=['summary','history','reports','options'];
+var FALLBACK_CAT={name:'Uncategorized',color:'#94a3b8'};
+var THEME_COLOR_LIGHT='#f8fafc';
 var THEME_COLOR_DARK='#0f172a';
 var SHEET_ANIM_MS=260;
 
 var DEFAULT_CATS=[
-  {id:'makan',name:'Makan',color:'#ef4444'},
+  {id:'makan',name:'Food',color:'#ef4444'},
   {id:'transport',name:'Transport',color:'#3b82f6'},
-  {id:'belanja',name:'Belanja',color:'#a855f7'},
-  {id:'tagihan',name:'Tagihan',color:'#f59e0b'},
-  {id:'hiburan',name:'Hiburan',color:'#10b981'},
-  {id:'lainnya',name:'Lainnya',color:'#64748b'}
+  {id:'belanja',name:'Shopping',color:'#a855f7'},
+  {id:'tagihan',name:'Bills',color:'#f59e0b'},
+  {id:'hiburan',name:'Entertainment',color:'#10b981'},
+  {id:'lainnya',name:'Other',color:'#64748b'}
 ];
 
 function pad(n){return String(n).padStart(2,'0');}
@@ -350,20 +550,15 @@ function todayISO(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()
 function isoShift(days){var d=new Date();d.setDate(d.getDate()-days);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function isoOfDate(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 
-var fmtIDR=new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0});
+var fmtIDR=new Intl.NumberFormat('en-US',{style:'currency',currency:'IDR',maximumFractionDigits:0});
 var fmtUSD=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2});
 
-function formatMoney(amount,currency){
-  var n=Number(amount)||0;
-  return currency===USD?fmtUSD.format(n):fmtIDR.format(Math.round(n));
-}
+function formatMoney(amount,currency){var n=Number(amount)||0;return currency===USD?fmtUSD.format(n):fmtIDR.format(Math.round(n));}
 function formatBase(amount){return formatMoney(amount,state.baseCurrency);}
 function formatCompact(amount){
-  var n=Number(amount)||0;
-  var abs=Math.abs(n);
-  var sym=state.baseCurrency===USD?'$':'Rp ';
-  if(abs>=1000000)return sym+(n/1000000).toFixed(1).replace('.',',')+'jt';
-  if(abs>=1000)return sym+Math.round(n/1000)+'rb';
+  var n=Number(amount)||0,abs=Math.abs(n),sym=state.baseCurrency===USD?'$':'Rp ';
+  if(abs>=1000000)return sym+(n/1000000).toFixed(1)+'M';
+  if(abs>=1000)return sym+Math.round(n/1000)+'k';
   return sym+Math.round(n);
 }
 function toBase(amount,currency,rate,base){
@@ -373,28 +568,43 @@ function toBase(amount,currency,rate,base){
   if(base===USD&&currency===IDR)return n/rate;
   return n;
 }
-function formatDateShort(iso){
-  var d=new Date(iso+'T00:00:00');
-  return isNaN(d)?iso:d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
-}
+function formatDateShort(iso){var d=new Date(iso+'T00:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-US',{day:'numeric',month:'short'});}
 function dateLabel(iso){
   var d=new Date(iso+'T00:00:00');
-  var long=isNaN(d)?iso:d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  if(iso===todayISO())return'Hari ini · '+long;
-  if(iso===isoShift(1))return'Kemarin · '+long;
+  var long=isNaN(d)?iso:d.toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  if(iso===todayISO())return'Today · '+long;
+  if(iso===isoShift(1))return'Yesterday · '+long;
   return long;
 }
-function debounce(fn,ms){
-  ms=ms||150;
-  var t;
-  return function(){var a=arguments;clearTimeout(t);t=setTimeout(function(){fn.apply(null,a);},ms);};
-}
+function debounce(fn,ms){ms=ms||150;var t;return function(){var a=arguments;clearTimeout(t);t=setTimeout(function(){fn.apply(null,a);},ms);};}
 function monthKey(){return view.y+'-'+pad(view.m+1);}
 function monthKeyOf(y,m){return y+'-'+pad(m+1);}
-function monthLabelText(){return new Date(view.y,view.m,1).toLocaleDateString('id-ID',{month:'long',year:'numeric'});}
+function monthLabelText(){return new Date(view.y,view.m,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});}
+
+var _catMap=null,_catMapKey='';
+function getCatMap(){
+  var k=state.categories.map(function(c){return c.id;}).join(',');
+  if(k!==_catMapKey){
+    _catMap=new Map(state.categories.map(function(c){return [c.id,c];}));
+    _catMapKey=k;
+  }
+  return _catMap;
+}
 
 function defaults(){
-  return{budget:2000000,baseCurrency:IDR,exchangeRate:16000,lastCurrency:IDR,categories:DEFAULT_CATS.map(function(c){return Object.assign({},c);}),transactions:[],theme:'system',catBudgets:{},lastTab:'overview'};
+  return{
+    budget:2000000,
+    baseCurrency:IDR,
+    exchangeRate:16000,
+    lastCurrency:IDR,
+    categories:DEFAULT_CATS.map(function(c){return Object.assign({},c);}),
+    transactions:[],
+    theme:'system',
+    catBudgets:{},
+    lastTab:'summary',
+    profile:'default',
+    language:'en'
+  };
 }
 
 function normalize(p){
@@ -411,17 +621,8 @@ function normalize(p){
     if(cats.length)d.categories=cats;
   }
   if(Array.isArray(p.transactions)){
-    d.transactions=p.transactions.filter(function(t){
-      return t&&isFinite(Number(t.amount))&&Number(t.amount)>0&&typeof t.date==='string';
-    }).map(function(t){
-      return {
-        id:t.id?String(t.id):uid(),
-        amount:Number(t.amount),
-        currency:t.currency===USD?USD:IDR,
-        categoryId:t.categoryId?String(t.categoryId):'lainnya',
-        date:t.date.slice(0,10),
-        note:t.note?String(t.note):''
-      };
+    d.transactions=p.transactions.filter(function(t){return t&&isFinite(Number(t.amount))&&Number(t.amount)>0&&typeof t.date==='string';}).map(function(t){
+      return{id:t.id?String(t.id):uid(),amount:Number(t.amount),currency:t.currency===USD?USD:IDR,categoryId:t.categoryId?String(t.categoryId):'lainnya',date:t.date.slice(0,10),note:t.note?String(t.note):''};
     });
   }
   if(p.theme==='system'||p.theme==='light'||p.theme==='dark')d.theme=p.theme;
@@ -435,18 +636,17 @@ function normalize(p){
     }
     d.catBudgets=cb;
   }
-  if(p.lastTab&&TABS.indexOf(p.lastTab)>=0)d.lastTab=p.lastTab;
+  var tabMap={'overview':'summary','activity':'history','insights':'reports','settings':'options'};
+  var lt=p.lastTab;
+  if(lt&&tabMap[lt])lt=tabMap[lt];
+  if(lt&&TABS.indexOf(lt)>=0)d.lastTab=lt;
+  if(typeof p.profile==='string'&&p.profile)d.profile=p.profile;
+  if(p.language==='en')d.language=p.language;
   return d;
 }
 
-function load(){
-  try{var raw=localStorage.getItem(KEY);if(!raw)return defaults();return normalize(JSON.parse(raw));}
-  catch(e){console.warn('Gagal memuat data:',e);return defaults();}
-}
-function save(){
-  try{localStorage.setItem(KEY,JSON.stringify(state));}
-  catch(e){console.warn('Gagal menyimpan data:',e);}
-}
+function load(){try{var raw=localStorage.getItem(KEY);if(!raw)return defaults();return normalize(JSON.parse(raw));}catch(e){console.warn('Failed to load data:',e);return defaults();}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){console.warn('Failed to save data:',e);}}
 var saveDebounced=debounce(save,150);
 
 var state=load();
@@ -458,9 +658,8 @@ var formCurrency=IDR;
 var formCategoryId=null;
 var openSheetEl=null;
 var formCatsCache='';
-var activeTab='overview';
+var activeTab='summary';
 var activityFilters={q:'',range:'month',cat:ALL,sort:'date-desc',month:null};
-var actChipsBuilt=false;
 
 var $=function(id){return document.getElementById(id);};
 var summaryEl=$('summary');
@@ -469,6 +668,8 @@ var monthLabelEl=$('monthLabel');
 var overviewListEl=$('overviewList');
 var overlay=$('overlay');
 var sheetForm=$('sheetForm');
+var sheetFilter=$('sheetFilter');
+var sheetCategory=$('sheetCategory');
 var fAmount=$('fAmount');
 var fDate=$('fDate');
 var fNote=$('fNote');
@@ -482,10 +683,13 @@ var sBase=$('sBase');
 var sCats=$('sCats');
 var sCatBudgetsEl=$('sCatBudgets');
 var sTheme=$('sTheme');
+var profileSelect=$('profileSelect');
+var btnAppSettings=$('btnAppSettings');
 var actSearch=$('actSearch');
-var actRange=$('actRange');
-var actCat=$('actCat');
-var actSort=$('actSort');
+var searchWrap=$('searchWrap');
+var filterRangeBtn=$('filterRangeBtn');
+var filterCatBtn=$('filterCatBtn');
+var filterSortBtn=$('filterSortBtn');
 var actMeta=$('actMeta');
 var actList=$('actList');
 var trendChart=$('trendChart');
@@ -496,12 +700,14 @@ var yearlyList=$('yearlyList');
 var fabEl=$('fab');
 var panelsAll=document.querySelectorAll('.tab-panel');
 var tabsAll=document.querySelectorAll('.tab');
+var snackbar=$('snackbar');
+var snackbarMsg=$('snackbarMsg');
+var snackbarBtn=$('snackbarBtn');
+var toastEl=$('toast');
 
-/* theme */
 var mediaDark=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
 function applyTheme(){
-  var t=state.theme;
-  var dark=false;
+  var t=state.theme,dark=false;
   if(t==='dark')dark=true;
   else if(t==='light')dark=false;
   else dark=!!(mediaDark&&mediaDark.matches);
@@ -509,98 +715,105 @@ function applyTheme(){
   var meta=document.querySelector('meta[name="theme-color"]');
   if(meta)meta.setAttribute('content',dark?THEME_COLOR_DARK:THEME_COLOR_LIGHT);
 }
-if(mediaDark&&mediaDark.addEventListener){
-  mediaDark.addEventListener('change',function(){if(state.theme==='system')applyTheme();});
+if(mediaDark&&mediaDark.addEventListener){mediaDark.addEventListener('change',function(){if(state.theme==='system')applyTheme();});}
+
+var snackbarTimer=null,snackbarAction=null,toastTimer=null;
+function showSnackbar(msg,actionLabel,action){
+  snackbarMsg.textContent=msg;
+  snackbarBtn.textContent=actionLabel||'Undo';
+  snackbarBtn.style.display=actionLabel?'':'none';
+  snackbarAction=action||null;
+  snackbar.classList.add('show');
+  clearTimeout(snackbarTimer);
+  snackbarTimer=setTimeout(function(){snackbar.classList.remove('show');snackbarAction=null;},5000);
+}
+snackbarBtn.addEventListener('click',function(){
+  if(snackbarAction)try{snackbarAction();}catch(e){}
+  snackbar.classList.remove('show');
+  snackbarAction=null;
+  clearTimeout(snackbarTimer);
+});
+function showToast(msg){
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2500);
 }
 
-/* tabs */
+function snapshot(){return JSON.stringify(state);}
+function restore(snap){
+  state=JSON.parse(snap);
+  save();
+  _catMapKey='';
+  rebuildFormCatsCache();
+  renderOverviewChips();
+  renderActiveTab();
+}
+
+function chipHTML(cls,c,active){
+  var dot=c.color?'<span class="dot" style="background:'+c.color+'"></span>':'';
+  return '<button type="button" class="'+cls+(active?' active':'')+'" data-cat="'+esc(c.id)+'" aria-pressed="'+!!active+'">'+dot+esc(c.name)+'</button>';
+}
+
 function switchTab(name){
-  if(TABS.indexOf(name)<0)name='overview';
+  if(TABS.indexOf(name)<0)name='summary';
   activeTab=name;
   if(state.lastTab!==name){state.lastTab=name;save();}
-  for(var i=0;i<panelsAll.length;i++){panelsAll[i].hidden=panelsAll[i].dataset.tab!==name;}
+  for(var i=0;i<panelsAll.length;i++)panelsAll[i].hidden=panelsAll[i].dataset.tab!==name;
   for(var j=0;j<tabsAll.length;j++){
     var on=tabsAll[j].dataset.tab===name;
     tabsAll[j].classList.toggle('active',on);
     tabsAll[j].setAttribute('aria-selected',String(on));
   }
-  fabEl.classList.toggle('hidden',name==='settings');
+  fabEl.classList.toggle('hidden',name==='options');
   renderActiveTab();
 }
 function renderActiveTab(){
-  if(activeTab==='overview')renderOverview();
-  else if(activeTab==='activity')renderActivity();
-  else if(activeTab==='insights')renderInsights();
+  if(activeTab==='summary')renderOverview();
+  else if(activeTab==='history')renderActivity();
+  else if(activeTab==='reports')renderInsights();
   else renderSettings();
 }
 
-/* contexts */
 function buildContext(){
-  var rate=state.exchangeRate;
-  var base=state.baseCurrency;
-  var catMap=new Map(state.categories.map(function(c){return [c.id,c];}));
+  var rate=state.exchangeRate,base=state.baseCurrency;
+  var catMap=getCatMap();
   var key=monthKey();
   var txs=[];
   for(var i=0;i<state.transactions.length;i++){
     var t=state.transactions[i];
     if(t.date.slice(0,7)!==key)continue;
-    txs.push({
-      id:t.id,date:t.date,note:t.note,categoryId:t.categoryId,
-      currency:t.currency,amount:t.amount,
-      baseAmount:toBase(t.amount,t.currency,rate,base),
-      cat:catMap.get(t.categoryId)||FALLBACK_CAT
-    });
+    txs.push({id:t.id,date:t.date,note:t.note,categoryId:t.categoryId,currency:t.currency,amount:t.amount,baseAmount:toBase(t.amount,t.currency,rate,base),cat:catMap.get(t.categoryId)||FALLBACK_CAT});
   }
-  var total=0;
-  var byCatMap=new Map();
-  for(var k=0;k<txs.length;k++){
-    total+=txs[k].baseAmount;
-    var cid=txs[k].categoryId;
-    byCatMap.set(cid,(byCatMap.get(cid)||0)+txs[k].baseAmount);
-  }
+  var total=0,byCatMap=new Map();
+  for(var k=0;k<txs.length;k++){total+=txs[k].baseAmount;var cid=txs[k].categoryId;byCatMap.set(cid,(byCatMap.get(cid)||0)+txs[k].baseAmount);}
   var byCat=[];
   byCatMap.forEach(function(amt,id){byCat.push({cat:catMap.get(id)||FALLBACK_CAT,amt:amt});});
   byCat.sort(function(a,b){return b.amt-a.amt;});
-
   var dayGroups=new Map();
   var filtered=filterCat===ALL?txs:txs.filter(function(t){return t.categoryId===filterCat;});
   filtered.sort(function(a,b){return a.date===b.date?(a.id<b.id?1:-1):(a.date<b.date?1:-1);});
-  for(var m=0;m<filtered.length;m++){
-    var x=filtered[m];
-    if(!dayGroups.has(x.date))dayGroups.set(x.date,[]);
-    dayGroups.get(x.date).push(x);
-  }
-  return {txs:txs,catMap:catMap,total:total,byCat:byCat,dayGroups:dayGroups};
+  for(var m=0;m<filtered.length;m++){var x=filtered[m];if(!dayGroups.has(x.date))dayGroups.set(x.date,[]);dayGroups.get(x.date).push(x);}
+  return{txs:txs,catMap:catMap,total:total,byCat:byCat,dayGroups:dayGroups};
 }
 
 function buildActivityContext(){
-  var rate=state.exchangeRate;
-  var base=state.baseCurrency;
-  var catMap=new Map(state.categories.map(function(c){return [c.id,c];}));
+  var rate=state.exchangeRate,base=state.baseCurrency;
+  var catMap=getCatMap();
   var q=activityFilters.q.toLowerCase().trim();
   var ref=new Date();
   var limit7=isoOfDate(new Date(ref.getTime()-7*86400000));
   var limit30=isoOfDate(new Date(ref.getTime()-30*86400000));
-  var targetMonth=(activityFilters.month||monthKey());
-
+  var targetMonth=activityFilters.month||monthKey();
   var items=[];
   for(var i=0;i<state.transactions.length;i++){
-    var t=state.transactions[i];
-    var cat=catMap.get(t.categoryId)||FALLBACK_CAT;
+    var t=state.transactions[i],cat=catMap.get(t.categoryId)||FALLBACK_CAT;
     if(activityFilters.range==='month'){if(t.date.slice(0,7)!==targetMonth)continue;}
     else if(activityFilters.range==='7d'){if(t.date<limit7)continue;}
     else if(activityFilters.range==='30d'){if(t.date<limit30)continue;}
     if(activityFilters.cat!==ALL&&t.categoryId!==activityFilters.cat)continue;
-    if(q){
-      var hay=(t.note||'')+' '+cat.name;
-      if(hay.toLowerCase().indexOf(q)<0)continue;
-    }
-    items.push({
-      id:t.id,date:t.date,note:t.note,categoryId:t.categoryId,
-      currency:t.currency,amount:t.amount,
-      baseAmount:toBase(t.amount,t.currency,rate,base),
-      cat:cat
-    });
+    if(q){var hay=(t.note||'')+' '+cat.name;if(hay.toLowerCase().indexOf(q)<0)continue;}
+    items.push({id:t.id,date:t.date,note:t.note,categoryId:t.categoryId,currency:t.currency,amount:t.amount,baseAmount:toBase(t.amount,t.currency,rate,base),cat:cat});
   }
   var s=activityFilters.sort;
   items.sort(function(a,b){
@@ -609,104 +822,40 @@ function buildActivityContext(){
     if(s==='amount-asc')return a.baseAmount-b.baseAmount;
     return a.date===b.date?(a.id<b.id?1:-1):(a.date<b.date?1:-1);
   });
-
-  var total=0;
-  var dayGroups=new Map();
-  for(var j=0;j<items.length;j++){
-    total+=items[j].baseAmount;
-    var d=items[j].date;
-    if(!dayGroups.has(d))dayGroups.set(d,[]);
-    dayGroups.get(d).push(items[j]);
-  }
-  return {items:items,dayGroups:dayGroups,total:total,count:items.length,catMap:catMap};
+  var total=0,dayGroups=new Map();
+  for(var j=0;j<items.length;j++){total+=items[j].baseAmount;var d=items[j].date;if(!dayGroups.has(d))dayGroups.set(d,[]);dayGroups.get(d).push(items[j]);}
+  return{items:items,dayGroups:dayGroups,total:total,count:items.length,catMap:catMap};
 }
 
 function buildInsightsContext(){
-  var rate=state.exchangeRate;
-  var base=state.baseCurrency;
-  var catMap=new Map(state.categories.map(function(c){return [c.id,c];}));
-  var all=state.transactions.map(function(t){
-    return {
-      id:t.id,date:t.date,currency:t.currency,amount:t.amount,categoryId:t.categoryId,
-      baseAmount:toBase(t.amount,t.currency,rate,base),
-      cat:catMap.get(t.categoryId)||FALLBACK_CAT
-    };
-  });
-
-  var months=[];
-  var d0=new Date(view.y,view.m,1);
-  for(var i=5;i>=0;i--){
-    var dd=new Date(d0.getFullYear(),d0.getMonth()-i,1);
-    months.push({
-      y:dd.getFullYear(),m:dd.getMonth(),
-      key:monthKeyOf(dd.getFullYear(),dd.getMonth()),
-      label:dd.toLocaleDateString('id-ID',{month:'short'})
-    });
-  }
-  var monthlyTotals=[0,0,0,0,0,0];
-  var monthsIndex={};
+  var rate=state.exchangeRate,base=state.baseCurrency;
+  var catMap=getCatMap();
+  var all=state.transactions.map(function(t){return{id:t.id,date:t.date,currency:t.currency,amount:t.amount,categoryId:t.categoryId,baseAmount:toBase(t.amount,t.currency,rate,base),cat:catMap.get(t.categoryId)||FALLBACK_CAT};});
+  var months=[],d0=new Date(view.y,view.m,1);
+  for(var i=5;i>=0;i--){var dd=new Date(d0.getFullYear(),d0.getMonth()-i,1);months.push({y:dd.getFullYear(),m:dd.getMonth(),key:monthKeyOf(dd.getFullYear(),dd.getMonth()),label:dd.toLocaleDateString('en-US',{month:'short'})});}
+  var monthlyTotals=[0,0,0,0,0,0],monthsIndex={};
   for(var mi=0;mi<months.length;mi++)monthsIndex[months[mi].key]=mi;
-
   var curKey=monthKey();
-  var prevD=new Date(view.y,view.m-1,1);
-  var prevKey=monthKeyOf(prevD.getFullYear(),prevD.getMonth());
+  var prevD=new Date(view.y,view.m-1,1),prevKey=monthKeyOf(prevD.getFullYear(),prevD.getMonth());
   var yearStr=String(view.y);
-
-  var curByCat=new Map();
-  var curTotal=0;
-  var biggest=null;
-  var prevTotal=0;
-  var yearTotal=0;
-  var yearMonthsSet=new Set();
-
+  var curByCat=new Map(),curTotal=0,biggest=null,prevTotal=0,yearTotal=0,yearMonthsSet=new Set();
   for(var j=0;j<all.length;j++){
-    var t=all[j];
-    var mKey=t.date.slice(0,7);
-    var yStr=t.date.slice(0,4);
-
+    var t=all[j],mKey=t.date.slice(0,7),yStr=t.date.slice(0,4);
     if(mKey in monthsIndex)monthlyTotals[monthsIndex[mKey]]+=t.baseAmount;
-
-    if(mKey===curKey){
-      curTotal+=t.baseAmount;
-      curByCat.set(t.categoryId,(curByCat.get(t.categoryId)||0)+t.baseAmount);
-      if(!biggest||t.baseAmount>biggest.baseAmount)biggest=t;
-    }
-
+    if(mKey===curKey){curTotal+=t.baseAmount;curByCat.set(t.categoryId,(curByCat.get(t.categoryId)||0)+t.baseAmount);if(!biggest||t.baseAmount>biggest.baseAmount)biggest=t;}
     if(mKey===prevKey)prevTotal+=t.baseAmount;
-
-    if(yStr===yearStr){
-      yearTotal+=t.baseAmount;
-      yearMonthsSet.add(mKey);
-    }
+    if(yStr===yearStr){yearTotal+=t.baseAmount;yearMonthsSet.add(mKey);}
   }
-
   var validCatIds=new Set(state.categories.map(function(c){return c.id;}));
   var curCats=[];
-  curByCat.forEach(function(amt,id){
-    var c=catMap.get(id);
-    curCats.push({
-      cat:c||FALLBACK_CAT,
-      amt:amt,
-      categoryId:(c&&validCatIds.has(c.id))?c.id:null
-    });
-  });
+  curByCat.forEach(function(amt,id){var c=catMap.get(id);curCats.push({cat:c||FALLBACK_CAT,amt:amt,categoryId:(c&&validCatIds.has(c.id))?c.id:null});});
   curCats.sort(function(a,b){return b.amt-a.amt;});
-
   var daysInMonth=new Date(view.y,view.m+1,0).getDate();
-  var dailyAvg=curTotal/daysInMonth;
-  var topCat=curCats[0]||null;
+  var dailyAvg=curTotal/daysInMonth,topCat=curCats[0]||null;
   var yearAvg=yearMonthsSet.size?yearTotal/yearMonthsSet.size:0;
-
-  return {
-    months:months,monthlyTotals:monthlyTotals,
-    curCats:curCats,curTotal:curTotal,
-    dailyAvg:dailyAvg,biggest:biggest,topCat:topCat,
-    prevTotal:prevTotal,yearTotal:yearTotal,yearAvg:yearAvg,
-    yearMonthsCount:yearMonthsSet.size
-  };
+  return{months:months,monthlyTotals:monthlyTotals,curCats:curCats,curTotal:curTotal,dailyAvg:dailyAvg,biggest:biggest,topCat:topCat,prevTotal:prevTotal,yearTotal:yearTotal,yearAvg:yearAvg,yearMonthsCount:yearMonthsSet.size};
 }
 
-/* overview */
 function renderOverview(){
   monthLabelEl.textContent=monthLabelText();
   var ctx=buildContext();
@@ -716,266 +865,296 @@ function renderOverview(){
 function renderSummaryOnly(){renderSummary(buildContext());}
 
 function renderSummary(ctx){
-  var budget=Number(state.budget)||0;
-  var total=ctx.total;
+  var budget=Number(state.budget)||0,total=ctx.total;
   var remaining=budget-total;
   var pct=budget>0?(total/budget)*100:0;
   var fill=Math.max(0,Math.min(100,pct));
   var barColor=pct>=100?'var(--danger)':(pct>=75?'var(--warn)':'var(--ok)');
-
-  var breakdownHTML='';
-  if(ctx.byCat.length>=2){
-    var max=ctx.byCat[0].amt;
-    breakdownHTML='<div class="breakdown"><div class="bd-title">Breakdown kategori</div>'+
-      ctx.byCat.map(function(r){
-        return '<div class="bd-row"><span class="dot" style="background:'+r.cat.color+'"></span>'+
-        '<div class="bd-main"><div class="bd-line">'+
-        '<span class="bd-name">'+esc(r.cat.name)+'</span>'+
-        '<span class="bd-amt">'+formatBase(r.amt)+'</span></div>'+
-        '<div class="bd-mini"><i style="width:'+(max>0?Math.max(3,(r.amt/max)*100):0)+'%;background:'+r.cat.color+'"></i></div>'+
-        '</div></div>';
-      }).join('')+'</div>';
-  }
-
-  var budgetHTML;
+  var html='<div class="hero">'+
+    '<div class="hero-label">Total spending · '+esc(monthLabelText())+'</div>'+
+    '<div class="hero-value">'+formatBase(total)+'</div>';
   if(budget>0){
-    budgetHTML='<div class="bar"><i style="width:'+fill+'%;background:'+barColor+'"></i></div>'+
-      '<div class="budget-meta"><span>'+(remaining>=0?'Sisa budget':'Kelebihan')+'</span>'+
-      '<strong style="color:'+(remaining>=0?'var(--text)':'var(--danger)')+'">'+formatBase(Math.abs(remaining))+'</strong></div>'+
-      '<div class="budget-sub">Budget '+formatBase(budget)+' · '+Math.round(pct)+'% terpakai</div>';
+    var lineTxt;
+    if(remaining>=0)lineTxt='Remaining '+formatBase(remaining)+' of '+formatBase(budget)+' · '+Math.round(pct)+'% used';
+    else lineTxt='Over budget '+formatBase(Math.abs(remaining))+' of '+formatBase(budget)+' · '+Math.round(pct)+'% used';
+    html+='<div class="bar" style="--bar-w:'+fill+'%;--bar-c:'+barColor+'"><i></i></div>'+
+      '<div class="budget-line'+(remaining<0?' over':'')+'">'+lineTxt+'</div>';
   }else{
-    budgetHTML='<div class="budget-sub">Budget bulanan belum diatur. <button class="link" data-act="open-settings">Atur sekarang</button></div>';
+    html+='<div class="budget-line">Monthly budget not set. <button class="link" data-act="open-settings">Set up</button></div>';
   }
-
-  summaryEl.innerHTML='<div class="card">'+
-    '<div class="sum-label">Total pengeluaran · '+esc(monthLabelText())+'</div>'+
-    '<div class="sum-total">'+formatBase(total)+'</div>'+
-    budgetHTML+breakdownHTML+
-    '</div>';
+  if(ctx.byCat.length>=2){
+    var totalAmt=ctx.byCat.reduce(function(s,r){return s+r.amt;},0);
+    var top3=ctx.byCat.slice(0,3);
+    var otherAmt=ctx.byCat.slice(3).reduce(function(s,r){return s+r.amt;},0);
+    var otherCount=ctx.byCat.length-3;
+    var barHTML='';
+    for(var i=0;i<top3.length;i++){
+      var w=totalAmt>0?(top3[i].amt/totalAmt)*100:0;
+      barHTML+='<i style="width:'+w+'%;background:'+top3[i].cat.color+'"></i>';
+    }
+    if(otherCount>0){
+      var w2=totalAmt>0?(otherAmt/totalAmt)*100:0;
+      barHTML+='<i style="width:'+w2+'%;background:var(--muted)"></i>';
+    }
+    var legendHTML=top3.map(function(r){
+      return '<div class="legend-row"><span class="dot" style="background:'+r.cat.color+'"></span><span class="ln">'+esc(r.cat.name)+'</span><span class="la">'+formatBase(r.amt)+'</span></div>';
+    }).join('');
+    if(otherCount>0){
+      var otherLabel=otherCount===1?'+1 other category':'+'+otherCount+' other categories';
+      legendHTML+='<div class="legend-row"><span class="dot" style="background:var(--muted)"></span><span class="ln muted">'+otherLabel+'</span><span class="la">'+formatBase(otherAmt)+'</span></div>';
+    }
+    html+='<div class="cat-stack"><div class="cat-stack-bar">'+barHTML+'</div><div class="cat-stack-legend">'+legendHTML+'</div></div>';
+  }
+  html+='</div>';
+  summaryEl.innerHTML=html;
 }
 
 function renderOverviewChips(){
-  var items=[{id:ALL,name:'Semua',color:null}].concat(state.categories);
-  chipsEl.innerHTML=items.map(function(c){
-    return '<button type="button" class="chip'+(c.id===filterCat?' active':'')+'" data-cat="'+esc(c.id)+'" aria-pressed="'+(c.id===filterCat)+'">'+
-    (c.color?'<span class="dot" style="background:'+c.color+';margin-top:0"></span>':'')+
-    esc(c.name)+'</button>';
-  }).join('');
+  var items=[{id:ALL,name:'All',color:null}].concat(state.categories);
+  chipsEl.innerHTML=items.map(function(c){return chipHTML('chip',c,c.id===filterCat);}).join('');
 }
 
 function itemHTML(t){
   var converted=t.currency!==state.baseCurrency?' · ≈ '+formatBase(t.baseAmount):'';
   var notePart=t.note?esc(t.note)+' · ':'';
   return '<div class="item">'+
-    '<span class="item-accent" style="background:'+t.cat.color+'"></span>'+
-    '<button type="button" class="item-body" data-act="edit" data-id="'+esc(t.id)+'" aria-label="Ubah transaksi '+esc(t.cat.name)+' '+formatMoney(t.amount,t.currency)+'">'+
-      '<span class="item-line1">'+
-        '<span class="item-cat">'+esc(t.cat.name)+'</span>'+
-        '<span class="item-amt">'+formatMoney(t.amount,t.currency)+'</span>'+
-      '</span>'+
+    '<button type="button" class="item-body" data-act="edit" data-id="'+esc(t.id)+'" aria-label="Edit transaction '+esc(t.cat.name)+' '+formatMoney(t.amount,t.currency)+'">'+
+      '<span class="item-line1"><span class="item-cat">'+esc(t.cat.name)+'</span><span class="item-amt">'+formatMoney(t.amount,t.currency)+'</span></span>'+
       '<span class="item-line2">'+notePart+formatDateShort(t.date)+converted+'</span>'+
     '</button>'+
-    '<button type="button" class="item-del" data-act="del" data-id="'+esc(t.id)+'" aria-label="Hapus transaksi '+esc(t.cat.name)+'">✕</button>'+
   '</div>';
 }
 
 function renderRecentList(ctx){
   var all=[];
   ctx.dayGroups.forEach(function(items){for(var i=0;i<items.length;i++)all.push(items[i]);});
-  if(all.length===0){
-    overviewListEl.innerHTML='<div class="empty"><strong>Belum ada transaksi</strong>Tekan tombol + untuk mencatat pengeluaran.</div>';
-    return;
-  }
-  var recent=all.slice(0,5);
-  var hasMore=all.length>5;
-  var html='';
+  if(all.length===0){overviewListEl.innerHTML='<div class="empty"><strong>No transactions yet</strong>Tap + to record an expense.</div>';return;}
+  var recent=all.slice(0,3);
+  var hasMore=all.length>3;
+  var html='<div class="item-list">';
   for(var i=0;i<recent.length;i++)html+=itemHTML(recent[i]);
-  if(hasMore)html+='<button type="button" class="see-all" data-act="see-all">Lihat semua →</button>';
+  html+='</div>';
+  if(hasMore)html+='<button type="button" class="see-all" data-act="see-all">See all →</button>';
   overviewListEl.innerHTML=html;
 }
 
-/* activity */
-function renderActivityChips(){
-  var ranges=[
-    {id:'month',label:'Bulan ini'},
-    {id:'7d',label:'7 hari'},
-    {id:'30d',label:'30 hari'},
-    {id:'all',label:'Semua'}
-  ];
-  actRange.innerHTML=ranges.map(function(r){
-    return '<button type="button" class="chip'+(r.id===activityFilters.range?' active':'')+'" data-range="'+r.id+'" aria-pressed="'+(r.id===activityFilters.range)+'">'+r.label+'</button>';
-  }).join('');
-
-  var cats=[{id:ALL,name:'Semua',color:null}].concat(state.categories);
-  actCat.innerHTML=cats.map(function(c){
-    return '<button type="button" class="chip'+(c.id===activityFilters.cat?' active':'')+'" data-cat="'+esc(c.id)+'" aria-pressed="'+(c.id===activityFilters.cat)+'">'+
-    (c.color?'<span class="dot" style="background:'+c.color+';margin-top:0"></span>':'')+
-    esc(c.name)+'</button>';
-  }).join('');
-
-  var sorts=[
-    {id:'date-desc',label:'Terbaru'},
-    {id:'date-asc',label:'Terlama'},
-    {id:'amount-desc',label:'Terbesar'},
-    {id:'amount-asc',label:'Terkecil'}
-  ];
-  actSort.innerHTML=sorts.map(function(s){
-    return '<button type="button" class="chip'+(s.id===activityFilters.sort?' active':'')+'" data-sort="'+s.id+'" aria-pressed="'+(s.id===activityFilters.sort)+'">'+s.label+'</button>';
-  }).join('');
-
-  actChipsBuilt=true;
-}
-
-function syncActivityChipsActive(){
-  var nodes,n,i,on;
-  nodes=actRange.querySelectorAll('[data-range]');
-  for(i=0;i<nodes.length;i++){n=nodes[i];on=n.dataset.range===activityFilters.range;n.classList.toggle('active',on);n.setAttribute('aria-pressed',String(on));}
-  nodes=actCat.querySelectorAll('[data-cat]');
-  for(i=0;i<nodes.length;i++){n=nodes[i];on=n.dataset.cat===activityFilters.cat;n.classList.toggle('active',on);n.setAttribute('aria-pressed',String(on));}
-  nodes=actSort.querySelectorAll('[data-sort]');
-  for(i=0;i<nodes.length;i++){n=nodes[i];on=n.dataset.sort===activityFilters.sort;n.classList.toggle('active',on);n.setAttribute('aria-pressed',String(on));}
+function updateFilterButtons(){
+  var currentKey=monthKey();
+  var rangeLabels={month:'This month','7d':'Last 7 days','30d':'Last 30 days','all':'All'};
+  var sortLabels={'date-desc':'Newest','date-asc':'Oldest','amount-desc':'Largest','amount-asc':'Smallest'};
+  var rangeLabel=rangeLabels[activityFilters.range]||'This month';
+  if(activityFilters.range==='month'&&activityFilters.month&&activityFilters.month!==currentKey){
+    var parts=activityFilters.month.split('-');
+    if(parts.length===2){
+      var d=new Date(parseInt(parts[0],10),parseInt(parts[1],10)-1,1);
+      rangeLabel=d.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+    }
+  }
+  filterRangeBtn.textContent=rangeLabel+' ▾';
+  filterRangeBtn.classList.toggle('active',activityFilters.range!=='month'||(activityFilters.month&&activityFilters.month!==currentKey));
+  var catLabel='Category';
+  if(activityFilters.cat!==ALL){
+    var c=getCatMap().get(activityFilters.cat);
+    catLabel=c?c.name:'Category';
+  }
+  filterCatBtn.textContent=catLabel+' ▾';
+  filterCatBtn.classList.toggle('active',activityFilters.cat!==ALL);
+  filterSortBtn.textContent=(sortLabels[activityFilters.sort]||'Newest')+' ▾';
+  filterSortBtn.classList.toggle('active',activityFilters.sort!=='date-desc');
 }
 
 function renderActivity(){
-  if(!actChipsBuilt)renderActivityChips();
-  else syncActivityChipsActive();
-
+  updateFilterButtons();
   if(document.activeElement!==actSearch)actSearch.value=activityFilters.q;
-
+  searchWrap.classList.toggle('has-value',!!activityFilters.q);
   var ctx=buildActivityContext();
-  actMeta.textContent=ctx.count+' transaksi · '+formatBase(ctx.total);
-
-  if(ctx.dayGroups.size===0){
-    actList.innerHTML='<div class="empty"><strong>Tidak ada transaksi yang cocok</strong>Coba ubah pencarian atau filter.</div>';
-    return;
-  }
-
+  actMeta.textContent=ctx.count+' transactions · '+formatBase(ctx.total);
+  if(ctx.dayGroups.size===0){actList.innerHTML='<div class="empty"><strong>No matching transactions</strong>Try adjusting your search or filters.</div>';return;}
   var html='';
   ctx.dayGroups.forEach(function(items,date){
     var dayTotal=0;
     for(var i=0;i<items.length;i++)dayTotal+=items[i].baseAmount;
-    html+='<div class="group"><div class="group-head"><span>'+esc(dateLabel(date))+'</span><span class="g-total">'+formatBase(dayTotal)+'</span></div>';
+    html+='<div class="group"><div class="group-head"><span>'+esc(dateLabel(date))+'</span><span class="g-total">'+formatBase(dayTotal)+'</span></div><div class="item-list">';
     for(var j=0;j<items.length;j++)html+=itemHTML(items[j]);
-    html+='</div>';
+    html+='</div></div>';
   });
   actList.innerHTML=html;
 }
 
-/* insights */
+function openFilterSheet(type){
+  var body=$('sheetFilterBody'),title=$('filterTitle'),content='';
+  if(type==='range'){
+    title.textContent='Date range';
+    var ranges=[{id:'month',label:'This month'},{id:'7d',label:'Last 7 days'},{id:'30d',label:'Last 30 days'},{id:'all',label:'All'}];
+    content=ranges.map(function(r){return '<button type="button" class="opt-row'+(activityFilters.range===r.id?' selected':'')+'" data-opt="range" data-val="'+r.id+'">'+r.label+'</button>';}).join('');
+  }else if(type==='cat'){
+    title.textContent='Category';
+    var cats=[{id:ALL,name:'All',color:null}].concat(state.categories);
+    content=cats.map(function(c){return '<button type="button" class="opt-row'+(activityFilters.cat===c.id?' selected':'')+'" data-opt="cat" data-val="'+esc(c.id)+'">'+(c.color?'<span class="dot" style="background:'+c.color+'"></span>':'')+esc(c.name)+'</button>';}).join('');
+  }else if(type==='sort'){
+    title.textContent='Sort by';
+    var sorts=[{id:'date-desc',label:'Newest'},{id:'date-asc',label:'Oldest'},{id:'amount-desc',label:'Largest'},{id:'amount-asc',label:'Smallest'}];
+    content=sorts.map(function(s){return '<button type="button" class="opt-row'+(activityFilters.sort===s.id?' selected':'')+'" data-opt="sort" data-val="'+s.id+'">'+s.label+'</button>';}).join('');
+  }
+  body.innerHTML=content;
+  openSheet(sheetFilter);
+}
+
 function renderInsights(){
   var ctx=buildInsightsContext();
   renderTrend(ctx);
+  renderMonthlyReport();
   renderDonut(ctx);
   renderStats(ctx);
   renderYearly(ctx);
 }
 
-function renderTrend(ctx){
-  var W=300,H=180;
-  var padL=8,padR=8,padTop=22,padBot=34;
-  var chartW=W-padL-padR;
-  var chartH=H-padTop-padBot;
-  var n=ctx.months.length;
-  var slot=chartW/n;
-  var barW=Math.min(30,slot-14);
-  var max=1;
-  for(var i=0;i<ctx.monthlyTotals.length;i++)if(ctx.monthlyTotals[i]>max)max=ctx.monthlyTotals[i];
+/* ============ Monthly Report Table ============ */
+function renderMonthlyReport(){
+  var bodyEl=$('monthlyReportBody');
+  var footEl=$('monthlyReportFoot');
+  var labelEl=$('monthlyReportLabel');
+  if(!bodyEl||!footEl||!labelEl)return;
 
-  var parts=[];
-  parts.push('<line x1="'+padL+'" y1="'+(padTop+chartH)+'" x2="'+(W-padR)+'" y2="'+(padTop+chartH)+'" stroke="var(--line)" stroke-width="1"/>');
+  var y=view.y,m=view.m;
+  labelEl.textContent=new Date(y,m,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
 
-  for(var j=0;j<n;j++){
-    var mo=ctx.months[j];
-    var val=ctx.monthlyTotals[j];
-    var h=Math.max(2,(val/max)*chartH);
-    var x=padL+slot*j+(slot-barW)/2;
-    var y=padTop+chartH-h;
-    var isCurrent=(mo.y===view.y&&mo.m===view.m);
-    parts.push('<rect class="trend-bar'+(isCurrent?' current':'')+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW+'" height="'+h.toFixed(1)+'" rx="4" data-y="'+mo.y+'" data-m="'+mo.m+'"/>');
-    if(val>0){
-      parts.push('<text class="trend-value" x="'+(x+barW/2).toFixed(1)+'" y="'+(y-4).toFixed(1)+'">'+esc(formatCompact(val))+'</text>');
-    }
-    parts.push('<text class="trend-label" x="'+(x+barW/2).toFixed(1)+'" y="'+(H-12)+'">'+esc(mo.label)+'</text>');
+  var daysInMonth=new Date(y,m+1,0).getDate();
+  var mKey=monthKeyOf(y,m);
+  var today=todayISO();
+  var todayDay=(today.slice(0,7)===mKey)?parseInt(today.slice(8,10),10):0;
+  var rate=state.exchangeRate,base=state.baseCurrency;
+
+  var byDay={};
+  for(var i=0;i<state.transactions.length;i++){
+    var t=state.transactions[i];
+    if(t.date.slice(0,7)!==mKey)continue;
+    var day=parseInt(t.date.slice(8,10),10);
+    byDay[day]=(byDay[day]||0)+toBase(t.amount,t.currency,rate,base);
   }
 
+  var weekdayTotals=[0,0,0,0,0,0,0];
+  var grandTotal=0;
+  var rows='';
+  for(var d=1;d<=daysInMonth;d++){
+    var wd=new Date(y,m,d).getDay();
+    var amt=byDay[d]||0;
+    var isToday=(d===todayDay);
+    rows+='<tr'+(isToday?' class="mr-today"':'')+'>';
+    rows+='<td class="mr-day">'+d+'</td>';
+    for(var w=0;w<7;w++){
+      if(w===wd&&amt>0){
+        rows+='<td class="mr-val" title="'+esc(formatBase(amt))+'">'+esc(formatCompact(amt))+'</td>';
+      }else{
+        rows+='<td class="mr-empty">·</td>';
+      }
+    }
+    if(amt>0){
+      rows+='<td class="mr-total" title="'+esc(formatBase(amt))+'">'+esc(formatCompact(amt))+'</td>';
+      weekdayTotals[wd]+=amt;
+      grandTotal+=amt;
+    }else{
+      rows+='<td class="mr-total mr-empty">·</td>';
+    }
+    rows+='</tr>';
+  }
+  bodyEl.innerHTML=rows;
+
+  var foot='<tr><td class="mr-day">Σ</td>';
+  for(var wf=0;wf<7;wf++){
+    if(weekdayTotals[wf]>0){
+      foot+='<td class="mr-total" title="'+esc(formatBase(weekdayTotals[wf]))+'">'+esc(formatCompact(weekdayTotals[wf]))+'</td>';
+    }else{
+      foot+='<td class="mr-total mr-empty">·</td>';
+    }
+  }
+  if(grandTotal>0){
+    foot+='<td class="mr-total" title="'+esc(formatBase(grandTotal))+'">'+esc(formatCompact(grandTotal))+'</td>';
+  }else{
+    foot+='<td class="mr-total mr-empty">·</td>';
+  }
+  foot+='</tr>';
+  footEl.innerHTML=foot;
+}
+
+function renderTrend(ctx){
+  var W=300,H=160;
+  var padL=8,padR=8,padTop=18,padBot=28;
+  var chartW=W-padL-padR,chartH=H-padTop-padBot;
+  var n=ctx.months.length,slot=chartW/n;
+  var barW=Math.min(28,slot-14);
+  var max=1;
+  for(var i=0;i<ctx.monthlyTotals.length;i++)if(ctx.monthlyTotals[i]>max)max=ctx.monthlyTotals[i];
+  var parts=[];
+  parts.push('<line x1="'+padL+'" y1="'+(padTop+chartH)+'" x2="'+(W-padR)+'" y2="'+(padTop+chartH)+'" stroke="var(--line)" stroke-width="1"/>');
+  for(var j=0;j<n;j++){
+    var mo=ctx.months[j],val=ctx.monthlyTotals[j];
+    var h=Math.max(2,(val/max)*chartH);
+    var x=padL+slot*j+(slot-barW)/2,y=padTop+chartH-h;
+    var isCurrent=(mo.y===view.y&&mo.m===view.m);
+    parts.push('<rect class="trend-bar'+(isCurrent?' current':'')+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW+'" height="'+h.toFixed(1)+'" rx="4" data-y="'+mo.y+'" data-m="'+mo.m+'"><title>'+esc(mo.label)+': '+formatBase(val)+'</title></rect>');
+    parts.push('<text class="trend-label" x="'+(x+barW/2).toFixed(1)+'" y="'+(H-10)+'">'+esc(mo.label)+'</text>');
+  }
   trendChart.innerHTML=parts.join('');
 }
 
 function renderDonut(ctx){
-  var total=ctx.curTotal;
-  var c=2*Math.PI*60;
-  var parts=[];
-  var legendHTML='';
-
+  var total=ctx.curTotal,c=2*Math.PI*52;
+  var parts=[],legendHTML='';
   if(!total||ctx.curCats.length===0){
-    parts.push('<circle cx="90" cy="90" r="60" fill="none" stroke="var(--track)" stroke-width="24"/>');
-    parts.push('<text x="90" y="96" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="inherit">Belum ada data</text>');
-    legendHTML='<div class="legend-row"><span class="legend-name" style="color:var(--muted);font-weight:500">Belum ada transaksi bulan ini</span></div>';
+    parts.push('<circle cx="80" cy="80" r="52" fill="none" stroke="var(--track)" stroke-width="16"/>');
+    parts.push('<text x="80" y="84" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="inherit">No data yet</text>');
+    legendHTML='<div class="legend-row"><span class="ln muted">No transactions this month</span></div>';
   }else{
     var acc=0;
     for(var i=0;i<ctx.curCats.length;i++){
-      var it=ctx.curCats[i];
-      var pct=it.amt/total;
-      var dash=pct*c;
+      var it=ctx.curCats[i],pct=it.amt/total,dash=pct*c;
       var hasCat=!!it.categoryId;
       var cls=hasCat?' class="donut-slice"':'';
       var catAttr=hasCat?' data-cat="'+esc(it.categoryId)+'"':'';
-      parts.push('<circle'+cls+' cx="90" cy="90" r="60" fill="none" stroke="'+it.cat.color+'" stroke-width="24" stroke-dasharray="'+dash.toFixed(2)+' '+(c-dash).toFixed(2)+'" stroke-dashoffset="'+(-acc).toFixed(2)+'" transform="rotate(-90 90 90)"'+catAttr+'/>');
+      parts.push('<circle'+cls+' cx="80" cy="80" r="52" fill="none" stroke="'+it.cat.color+'" stroke-width="16" stroke-dasharray="'+dash.toFixed(2)+' '+(c-dash).toFixed(2)+'" stroke-dashoffset="'+(-acc).toFixed(2)+'" transform="rotate(-90 80 80)"'+catAttr+'/>');
       acc+=dash;
     }
     legendHTML=ctx.curCats.slice(0,6).map(function(it){
       var pct=it.amt/total*100;
-      return '<div class="legend-row"><span class="dot" style="background:'+it.cat.color+'"></span>'+
-        '<span class="legend-name">'+esc(it.cat.name)+'</span>'+
-        '<span class="legend-pct">'+pct.toFixed(1)+'%</span></div>';
+      return '<div class="legend-row"><span class="dot" style="background:'+it.cat.color+'"></span><span class="ln">'+esc(it.cat.name)+'</span><span class="legend-pct">'+pct.toFixed(1)+'%</span></div>';
     }).join('');
   }
-
   donutChart.innerHTML=parts.join('');
   donutLegend.innerHTML=legendHTML;
 }
 
 function renderStats(ctx){
   var rows=[];
-  rows.push(statRow('Rata-rata harian',formatBase(ctx.dailyAvg)));
+  rows.push(statRow('Daily average',formatBase(ctx.dailyAvg)));
   if(ctx.biggest){
-    rows.push(statRow('Pengeluaran terbesar',
-      '<div>'+formatBase(ctx.biggest.baseAmount)+'</div><span class="sub">'+esc(ctx.biggest.cat.name)+' · '+esc(formatDateShort(ctx.biggest.date))+'</span>'));
-  }else{
-    rows.push(statRow('Pengeluaran terbesar','—'));
-  }
-  rows.push(statRow('Kategori paling boros',ctx.topCat?esc(ctx.topCat.cat.name)+' · '+formatBase(ctx.topCat.amt):'—'));
-
+    rows.push(statRow('Largest expense','<div>'+formatBase(ctx.biggest.baseAmount)+'</div><span class="sub">'+esc(ctx.biggest.cat.name)+' · '+formatDateShort(ctx.biggest.date)+'</span>'));
+  }else rows.push(statRow('Largest expense','—'));
+  rows.push(statRow('Top category',ctx.topCat?esc(ctx.topCat.cat.name)+' · '+formatBase(ctx.topCat.amt):'—'));
   var diff=ctx.curTotal-ctx.prevTotal;
   var pctChange=ctx.prevTotal>0?(diff/ctx.prevTotal)*100:null;
-  if(pctChange===null||!isFinite(pctChange)){
-    rows.push(statRow('vs bulan lalu','—'));
-  }else{
-    var up=pctChange>0;
-    var cls=up?'trend-up':'trend-down';
-    var arrow=up?'▲':'▼';
-    rows.push(statRow('vs bulan lalu','<span class="'+cls+'">'+arrow+' '+Math.abs(pctChange).toFixed(1)+'%</span>'));
+  if(pctChange===null||!isFinite(pctChange))rows.push(statRow('vs last month','—'));
+  else{
+    var up=pctChange>0,cls=up?'trend-up':'trend-down',arrow=up?'▲':'▼';
+    rows.push(statRow('vs last month','<span class="'+cls+'">'+arrow+' '+Math.abs(pctChange).toFixed(1)+'%</span>'));
   }
   statList.innerHTML=rows.join('');
 }
 
 function renderYearly(ctx){
   var rows=[];
-  rows.push(statRow('Total tahun '+view.y,formatBase(ctx.yearTotal)));
-  rows.push(statRow('Rata-rata per bulan',
-    formatBase(ctx.yearAvg)+'<span class="sub">dari '+ctx.yearMonthsCount+' bulan data</span>'));
-  rows.push(statRow('Bulan dengan transaksi',ctx.yearMonthsCount+' bulan'));
+  rows.push(statRow('Total year '+view.y,formatBase(ctx.yearTotal)));
+  rows.push(statRow('Monthly average',formatBase(ctx.yearAvg)+'<span class="sub">from '+ctx.yearMonthsCount+' months</span>'));
+  rows.push(statRow('Months with transactions',ctx.yearMonthsCount+' months'));
   yearlyList.innerHTML=rows.join('');
 }
 
-function statRow(label,value){
-  return '<div class="stat-item"><span class="stat-label">'+label+'</span><span class="stat-value">'+value+'</span></div>';
-}
+function statRow(label,value){return '<div class="stat-item"><span class="stat-label">'+label+'</span><span class="stat-value">'+value+'</span></div>';}
 
-/* settings */
 function renderSettings(){
   sBudget.value=String(state.budget);
   sRate.value=String(state.exchangeRate);
+  if(profileSelect)profileSelect.value=state.profile||'default';
   renderSettingsCurrency();
   renderSettingsCats();
   renderCatBudgets();
@@ -984,66 +1163,43 @@ function renderSettings(){
 function renderSettingsCurrency(){
   $('sBudgetCur').textContent=state.baseCurrency;
   var nodes=sBase.querySelectorAll('[data-base]');
-  for(var i=0;i<nodes.length;i++){
-    var b=nodes[i];
-    var on=b.dataset.base===state.baseCurrency;
-    b.classList.toggle('active',on);
-    b.setAttribute('aria-pressed',String(on));
-  }
+  for(var i=0;i<nodes.length;i++){var b=nodes[i],on=b.dataset.base===state.baseCurrency;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}
 }
 function renderSettingsTheme(){
   var nodes=sTheme.querySelectorAll('[data-theme]');
-  for(var i=0;i<nodes.length;i++){
-    var b=nodes[i];
-    var on=b.dataset.theme===state.theme;
-    b.classList.toggle('active',on);
-    b.setAttribute('aria-pressed',String(on));
-  }
+  for(var i=0;i<nodes.length;i++){var b=nodes[i],on=b.dataset.theme===state.theme;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}
 }
 function renderSettingsCats(){
   sCats.innerHTML=state.categories.map(function(c){
-    return '<div class="cat-row"><span class="dot" style="background:'+c.color+'"></span>'+
-      '<span class="name">'+esc(c.name)+'</span>'+
-      '<button type="button" class="del-btn" data-del="'+esc(c.id)+'" aria-label="Hapus kategori '+esc(c.name)+'">✕</button></div>';
-  }).join('')||'<p class="budget-sub">Belum ada kategori.</p>';
+    return '<div class="cat-row"><span class="dot" style="background:'+c.color+'"></span><span class="name">'+esc(c.name)+'</span><button type="button" class="del-btn" data-del="'+esc(c.id)+'" aria-label="Delete category '+esc(c.name)+'">✕</button></div>';
+  }).join('')||'<p class="meta">No categories yet.</p>';
 }
 
-function catBudgetItemHTML(c,b,used){
-  var bVal=(typeof b==='number'&&b>0)?b:'';
-  var progressHTML='';
-  if(typeof b==='number'&&b>0){
-    var pct=Math.min(100,(used/b)*100);
-    var color=pct>=100?'var(--danger)':(pct>=75?'var(--warn)':c.color);
-    progressHTML='<div class="cat-budget-bar"><i style="width:'+pct+'%;background:'+color+'"></i></div>'+
-      '<div class="cat-budget-meta">'+formatBase(used)+' / '+formatBase(b)+' ('+Math.round(pct)+'%)</div>';
-  }
-  return '<div class="cat-budget-item">'+
-    '<div class="cat-budget-row">'+
-      '<span class="dot" style="background:'+c.color+'"></span>'+
-      '<span class="cat-budget-name">'+esc(c.name)+'</span>'+
-      '<input type="text" inputmode="decimal" class="mini-input" data-catbudget="'+esc(c.id)+'" placeholder="—" value="'+(bVal===''?'':bVal)+'" aria-label="Budget '+esc(c.name)+'"/>'+
-    '</div>'+
-    progressHTML+
-  '</div>';
-}
-function computeCatUsed(catId){
-  var rate=state.exchangeRate,base=state.baseCurrency;
-  var curKey=monthKey();
-  var used=0;
+function computeCatSpending(){
+  var map={},rate=state.exchangeRate,base=state.baseCurrency,curKey=monthKey();
   for(var i=0;i<state.transactions.length;i++){
     var t=state.transactions[i];
     if(t.date.slice(0,7)!==curKey)continue;
-    if(t.categoryId!==catId)continue;
-    used+=toBase(t.amount,t.currency,rate,base);
+    map[t.categoryId]=(map[t.categoryId]||0)+toBase(t.amount,t.currency,rate,base);
   }
-  return used;
+  return map;
+}
+
+function catBudgetProgressHTML(c,b,used){
+  if(typeof b!=='number'||b<=0)return '';
+  var pct=Math.min(100,(used/b)*100);
+  var color=pct>=100?'var(--danger)':(pct>=75?'var(--warn)':c.color);
+  return '<div class="cat-budget-progress"><div class="cat-budget-bar"><i style="width:'+pct+'%;background:'+color+'"></i></div><div class="cat-budget-meta">'+formatBase(used)+' / '+formatBase(b)+' ('+Math.round(pct)+'%)</div></div>';
+}
+function catBudgetItemHTML(c,b,used){
+  var bVal=(typeof b==='number'&&b>0)?b:'';
+  return '<div class="cat-budget-item"><div class="cat-budget-row"><span class="dot" style="background:'+c.color+'"></span><span class="cat-budget-name">'+esc(c.name)+'</span><input type="text" inputmode="decimal" class="mini-input" data-catbudget="'+esc(c.id)+'" placeholder="—" value="'+(bVal===''?'':bVal)+'" aria-label="Budget '+esc(c.name)+'"/></div>'+catBudgetProgressHTML(c,b,used)+'</div>';
 }
 function renderCatBudgets(){
+  var spending=computeCatSpending();
   var html='';
   for(var i=0;i<state.categories.length;i++){
-    var c=state.categories[i];
-    var b=state.catBudgets[c.id];
-    var used=computeCatUsed(c.id);
+    var c=state.categories[i],b=state.catBudgets[c.id],used=spending[c.id]||0;
     html+=catBudgetItemHTML(c,b,used);
   }
   sCatBudgetsEl.innerHTML=html;
@@ -1053,14 +1209,27 @@ function updateCatBudgetProgress(catId){
   if(!inp)return;
   var item=inp.closest('.cat-budget-item');
   if(!item)return;
-  var cat=state.categories.find(function(c){return c.id===catId;});
+  var cat=getCatMap().get(catId);
   if(!cat)return;
   var b=state.catBudgets[catId];
-  var used=computeCatUsed(catId);
-  item.outerHTML=catBudgetItemHTML(cat,b,used);
+  var rate=state.exchangeRate,base=state.baseCurrency,curKey=monthKey();
+  var used=0;
+  for(var i=0;i<state.transactions.length;i++){
+    var t=state.transactions[i];
+    if(t.date.slice(0,7)!==curKey)continue;
+    if(t.categoryId!==catId)continue;
+    used+=toBase(t.amount,t.currency,rate,base);
+  }
+  var html=catBudgetProgressHTML(cat,b,used);
+  var existing=item.querySelector('.cat-budget-progress');
+  if(existing){
+    if(html)existing.outerHTML=html;
+    else existing.remove();
+  }else if(html){
+    item.insertAdjacentHTML('beforeend',html);
+  }
 }
 
-/* sheet */
 function closeSheets(){
   if(openSheetEl){openSheetEl.classList.remove('open');openSheetEl=null;}
   overlay.classList.remove('open');
@@ -1075,28 +1244,15 @@ function openSheet(el){
 }
 
 function rebuildFormCatsCache(){
-  formCatsCache=state.categories.map(function(c){
-    return '<button type="button" class="chip-sm" data-cat="'+esc(c.id)+'">'+
-      '<span class="dot" style="background:'+c.color+';margin-top:0"></span>'+esc(c.name)+'</button>';
-  }).join('');
+  formCatsCache=state.categories.map(function(c){return chipHTML('chip-sm',c,false);}).join('');
 }
 function syncFormCatsActive(){
   var nodes=formCats.querySelectorAll('[data-cat]');
-  for(var i=0;i<nodes.length;i++){
-    var b=nodes[i];
-    var on=b.dataset.cat===formCategoryId;
-    b.classList.toggle('active',on);
-    b.setAttribute('aria-pressed',String(on));
-  }
+  for(var i=0;i<nodes.length;i++){var b=nodes[i],on=b.dataset.cat===formCategoryId;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}
 }
 function renderFormCurrency(){
   var nodes=sheetForm.querySelectorAll('.seg [data-cur]');
-  for(var i=0;i<nodes.length;i++){
-    var b=nodes[i];
-    var on=b.dataset.cur===formCurrency;
-    b.classList.toggle('active',on);
-    b.setAttribute('aria-pressed',String(on));
-  }
+  for(var i=0;i<nodes.length;i++){var b=nodes[i],on=b.dataset.cur===formCurrency;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}
 }
 function openForm(tx){
   editingId=tx?tx.id:null;
@@ -1106,7 +1262,7 @@ function openForm(tx){
   fDate.value=tx?tx.date:todayISO();
   fNote.value=tx?tx.note:'';
   formError.textContent='';
-  formTitle.textContent=tx?'Ubah Transaksi':'Tambah Transaksi';
+  formTitle.textContent=tx?'Edit Transaction':'Add Transaction';
   formDelete.style.display=tx?'inline-flex':'none';
   formCats.innerHTML=formCatsCache;
   syncFormCatsActive();
@@ -1138,91 +1294,74 @@ function submitForm(e){
   formError.textContent='';
   var amount=parseAmountInput(fAmount.value,formCurrency);
   if(amount===null){
-    formError.textContent=formCurrency===IDR
-      ?'Nominal IDR harus angka bulat lebih dari 0 (tanpa desimal).'
-      :'Nominal USD harus angka lebih dari 0 (maks 2 desimal).';
-    fAmount.focus();
-    return;
+    formError.textContent=formCurrency===IDR?'IDR amount must be a whole number greater than 0 (no decimals).':'USD amount must be a number greater than 0 (max 2 decimals).';
+    fAmount.focus();return;
   }
-  if(!formCategoryId){
-    formError.textContent='Pilih kategori terlebih dahulu.';
-    return;
-  }
-  var date=fDate.value||todayISO();
-  var note=fNote.value.trim();
-
+  if(!formCategoryId){formError.textContent='Please select a category.';return;}
+  var date=fDate.value||todayISO(),note=fNote.value.trim();
   if(editingId){
     var t=state.transactions.find(function(x){return x.id===editingId;});
-    if(t){
-      t.amount=amount;t.currency=formCurrency;t.categoryId=formCategoryId;t.date=date;t.note=note;
-    }
+    if(t){t.amount=amount;t.currency=formCurrency;t.categoryId=formCategoryId;t.date=date;t.note=note;}
   }else{
-    state.transactions.push({
-      id:uid(),amount:amount,currency:formCurrency,categoryId:formCategoryId,date:date,note:note
-    });
+    state.transactions.push({id:uid(),amount:amount,currency:formCurrency,categoryId:formCategoryId,date:date,note:note});
   }
   state.lastCurrency=formCurrency;
-
   var parts=date.split('-');
-  if(parts.length===3){
-    view.y=parseInt(parts[0],10);
-    view.m=parseInt(parts[1],10)-1;
-  }
-
+  if(parts.length===3){view.y=parseInt(parts[0],10);view.m=parseInt(parts[1],10)-1;}
   save();
   closeSheets();
   renderActiveTab();
 }
 
-function deleteTx(id){
+function deleteTxWithUndo(id){
   var t=state.transactions.find(function(x){return x.id===id;});
   if(!t)return;
-  var cat=state.categories.find(function(c){return c.id===t.categoryId;})||FALLBACK_CAT;
-  if(!confirm('Hapus transaksi "'+cat.name+' — '+formatMoney(t.amount,t.currency)+'"?'))return;
+  var cat=getCatMap().get(t.categoryId)||FALLBACK_CAT;
+  var snap=snapshot();
   state.transactions=state.transactions.filter(function(x){return x.id!==id;});
   save();
   closeSheets();
   renderActiveTab();
+  showSnackbar('Transaction '+cat.name+' deleted','Undo',function(){restore(snap);});
 }
 
-/* category */
 function addCategory(){
-  var nameEl=$('newCatName');
-  var name=nameEl.value.trim();
+  var nameEl=$('newCatName'),name=nameEl.value.trim();
   if(!name){nameEl.focus();return;}
   var lower=name.toLowerCase();
-  if(state.categories.some(function(c){return c.name.toLowerCase()===lower;})){
-    alert('Kategori "'+name+'" sudah ada.');nameEl.focus();return;
-  }
+  if(state.categories.some(function(c){return c.name.toLowerCase()===lower;})){showToast('Category "'+name+'" already exists.');nameEl.focus();return;}
   state.categories.push({id:'c'+uid(),name:name,color:safeColor($('newCatColor').value)});
   nameEl.value='';
   save();
+  _catMapKey='';
   rebuildFormCatsCache();
   renderOverviewChips();
   renderSettingsCats();
   renderCatBudgets();
-  actChipsBuilt=false;
 }
-function removeCategory(id){
-  if(state.categories.length<=1){alert('Minimal harus ada satu kategori.');return;}
-  if(!confirm('Hapus kategori ini? Transaksi lama akan ditandai "Tanpa kategori".'))return;
+function removeCategoryWithUndo(id){
+  if(state.categories.length<=1){showToast('At least one category is required.');return;}
+  var cat=getCatMap().get(id);
+  if(!cat)return;
+  var snap=snapshot();
   state.categories=state.categories.filter(function(c){return c.id!==id;});
   if(filterCat===id)filterCat=ALL;
   if(activityFilters.cat===id)activityFilters.cat=ALL;
   delete state.catBudgets[id];
   save();
+  _catMapKey='';
   rebuildFormCatsCache();
   renderOverviewChips();
   renderSettingsCats();
   renderCatBudgets();
-  actChipsBuilt=false;
+  renderActiveTab();
+  showSnackbar('Category '+cat.name+' deleted','Undo',function(){restore(snap);});
 }
 
 function onCatBudgetInput(e){
   var inp=e.target.closest('[data-catbudget]');
   if(!inp)return;
-  var id=inp.dataset.catbudget;
-  var raw=inp.value.trim();
+  var id=inp.dataset.catbudget,raw=inp.value.trim();
   if(!raw){delete state.catBudgets[id];save();updateCatBudgetProgress(id);return;}
   var v=parseFloat(raw);
   if(!isFinite(v)||v<0){delete state.catBudgets[id];save();updateCatBudgetProgress(id);return;}
@@ -1231,74 +1370,81 @@ function onCatBudgetInput(e){
   updateCatBudgetProgress(id);
 }
 
-/* data */
 function exportJSON(){
   var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
-  a.href=url;
-  a.download='pocket-tracker-'+todayISO()+'.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  a.href=url;a.download='pocket-tracker-'+todayISO()+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  showToast('Exported successfully');
 }
 function importJSON(file){
   var reader=new FileReader();
   reader.onload=function(){
     try{
       var data=JSON.parse(String(reader.result));
-      if(!data||typeof data!=='object'||!Array.isArray(data.transactions)){
-        throw new Error('struktur JSON tidak dikenali');
-      }
+      if(!data||typeof data!=='object'||!Array.isArray(data.transactions))throw new Error('unrecognized JSON structure');
       state=normalize(data);
       filterCat=ALL;
       activityFilters={q:'',range:'month',cat:ALL,sort:'date-desc',month:null};
-      actChipsBuilt=false;
+      _catMapKey='';
       if(state.transactions.length){
         var latest='';
-        for(var i=0;i<state.transactions.length;i++){
-          if(state.transactions[i].date>latest)latest=state.transactions[i].date;
-        }
+        for(var i=0;i<state.transactions.length;i++)if(state.transactions[i].date>latest)latest=state.transactions[i].date;
         var parts=latest.split('-');
-        if(parts.length===3){
-          view.y=parseInt(parts[0],10);
-          view.m=parseInt(parts[1],10)-1;
-        }
-      }else{
-        var d=new Date();
-        view={y:d.getFullYear(),m:d.getMonth()};
-      }
+        if(parts.length===3){view.y=parseInt(parts[0],10);view.m=parseInt(parts[1],10)-1;}
+      }else{var d=new Date();view={y:d.getFullYear(),m:d.getMonth()};}
       save();
       rebuildFormCatsCache();
       renderOverviewChips();
       applyTheme();
       closeSheets();
-      switchTab('overview');
-      alert('Data berhasil diimpor ('+state.transactions.length+' transaksi).');
-    }catch(err){
-      alert('Gagal mengimpor: '+err.message);
-    }
+      switchTab('summary');
+      showToast('Imported '+state.transactions.length+' transactions');
+    }catch(err){showToast('Import failed: '+err.message);}
   };
-  reader.onerror=function(){alert('Gagal membaca file.');};
+  reader.onerror=function(){showToast('Failed to read file.');};
   reader.readAsText(file);
 }
 function resetAll(){
-  if(!confirm('Hapus SEMUA data (transaksi, kategori, budget, pengaturan)?'))return;
-  if(!confirm('Tindakan ini tidak bisa dibatalkan. Lanjutkan?'))return;
+  if(!confirm('Delete ALL data (transactions, categories, budgets, settings)?'))return;
+  if(!confirm('This action cannot be undone. Continue?'))return;
+  var snap=snapshot();
   state=defaults();
   filterCat=ALL;
   activityFilters={q:'',range:'month',cat:ALL,sort:'date-desc',month:null};
-  actChipsBuilt=false;
+  _catMapKey='';
   save();
   rebuildFormCatsCache();
   renderOverviewChips();
   applyTheme();
   closeSheets();
-  switchTab('overview');
+  switchTab('summary');
+  showSnackbar('All data reset','Undo',function(){restore(snap);applyTheme();});
 }
 
-/* events */
+var pressTimer=null,pressTarget=null,suppressClickUntil=0;
+document.body.addEventListener('pointerdown',function(e){
+  var item=e.target.closest('.item-body');
+  if(!item)return;
+  pressTarget=item.dataset.id;
+  clearTimeout(pressTimer);
+  pressTimer=setTimeout(function(){
+    if(pressTarget){
+      suppressClickUntil=Date.now()+800;
+      var id=pressTarget;
+      pressTarget=null;
+      if(navigator.vibrate)try{navigator.vibrate(20);}catch(err){}
+      deleteTxWithUndo(id);
+    }
+  },500);
+},{passive:true});
+document.body.addEventListener('pointerup',function(){clearTimeout(pressTimer);pressTarget=null;},{passive:true});
+document.body.addEventListener('pointercancel',function(){clearTimeout(pressTimer);pressTarget=null;},{passive:true});
+document.body.addEventListener('pointerleave',function(){clearTimeout(pressTimer);pressTarget=null;},{passive:true});
+document.body.addEventListener('contextmenu',function(e){if(e.target.closest('.item-body'))e.preventDefault();});
+
 document.querySelector('.tabbar').addEventListener('click',function(e){
   var t=e.target.closest('.tab');
   if(!t)return;
@@ -1306,35 +1452,40 @@ document.querySelector('.tabbar').addEventListener('click',function(e){
 });
 document.addEventListener('keydown',function(e){
   if(e.target&&e.target.matches&&e.target.matches('input,textarea,select'))return;
-  if(e.key==='1')switchTab('overview');
-  else if(e.key==='2')switchTab('activity');
-  else if(e.key==='3')switchTab('insights');
-  else if(e.key==='4')switchTab('settings');
+  if(e.key==='1')switchTab('summary');
+  else if(e.key==='2')switchTab('history');
+  else if(e.key==='3')switchTab('reports');
+  else if(e.key==='4')switchTab('options');
   else if(e.key==='Escape')closeSheets();
 });
 
-$('prevMonth').addEventListener('click',function(){
-  var m=view.m-1,y=view.y;
-  if(m<0){m=11;y--;}
-  view={y:y,m:m};
-  renderOverview();
-});
-$('nextMonth').addEventListener('click',function(){
-  var m=view.m+1,y=view.y;
-  if(m>11){m=0;y++;}
-  view={y:y,m:m};
-  renderOverview();
-});
-
+$('prevMonth').addEventListener('click',function(){var m=view.m-1,y=view.y;if(m<0){m=11;y--;}view={y:y,m:m};renderOverview();});
+$('nextMonth').addEventListener('click',function(){var m=view.m+1,y=view.y;if(m>11){m=0;y++;}view={y:y,m:m};renderOverview();});
 $('fab').addEventListener('click',function(){openForm(null);});
-
 overlay.addEventListener('click',closeSheets);
 var closeBtns=document.querySelectorAll('[data-close]');
 for(var cb=0;cb<closeBtns.length;cb++)closeBtns[cb].addEventListener('click',closeSheets);
 
 summaryEl.addEventListener('click',function(e){
   var btn=e.target.closest('[data-act="open-settings"]');
-  if(btn)switchTab('settings');
+  if(btn){switchTab('options');openAccordion('budget');}
+});
+
+function openAccordion(name){
+  var groups=document.querySelectorAll('.acc-group');
+  for(var i=0;i<groups.length;i++){
+    var isTarget=groups[i].dataset.acc===name;
+    groups[i].classList.toggle('open',isTarget);
+    var head=groups[i].querySelector('.acc-head');
+    if(head)head.setAttribute('aria-expanded',String(isTarget));
+  }
+}
+document.getElementById('accordion').addEventListener('click',function(e){
+  var head=e.target.closest('.acc-head');
+  if(!head)return;
+  var group=head.closest('.acc-group');
+  if(group.classList.contains('open'))return;
+  openAccordion(group.dataset.acc);
 });
 
 chipsEl.addEventListener('click',function(e){
@@ -1342,12 +1493,7 @@ chipsEl.addEventListener('click',function(e){
   if(!btn)return;
   filterCat=btn.dataset.cat;
   var nodes=chipsEl.querySelectorAll('.chip');
-  for(var i=0;i<nodes.length;i++){
-    var b=nodes[i];
-    var on=b.dataset.cat===filterCat;
-    b.classList.toggle('active',on);
-    b.setAttribute('aria-pressed',String(on));
-  }
+  for(var i=0;i<nodes.length;i++){var b=nodes[i],on=b.dataset.cat===filterCat;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}
   renderRecentList(buildContext());
 });
 
@@ -1356,69 +1502,56 @@ overviewListEl.addEventListener('click',function(e){
   if(!btn)return;
   if(btn.dataset.act==='see-all'){
     activityFilters.range='month';
-    activityFilters.cat=ALL;
+    activityFilters.cat=filterCat;
     activityFilters.month=monthKey();
-    switchTab('activity');
+    switchTab('history');
     return;
   }
-  var id=btn.dataset.id;
+  if(Date.now()<suppressClickUntil)return;
   if(btn.dataset.act==='edit'){
-    var t=state.transactions.find(function(x){return x.id===id;});
+    var t=state.transactions.find(function(x){return x.id===btn.dataset.id;});
     if(t)openForm(t);
-  }else if(btn.dataset.act==='del'){
-    deleteTx(id);
   }
-});
-
-actSearch.addEventListener('input',debounce(function(){
-  activityFilters.q=actSearch.value;
-  renderActivity();
-},200));
-actRange.addEventListener('click',function(e){
-  var btn=e.target.closest('[data-range]');
-  if(!btn)return;
-  activityFilters.range=btn.dataset.range;
-  if(activityFilters.range==='month')activityFilters.month=monthKey();
-  renderActivity();
-});
-actCat.addEventListener('click',function(e){
-  var btn=e.target.closest('[data-cat]');
-  if(!btn)return;
-  activityFilters.cat=btn.dataset.cat;
-  renderActivity();
-});
-actSort.addEventListener('click',function(e){
-  var btn=e.target.closest('[data-sort]');
-  if(!btn)return;
-  activityFilters.sort=btn.dataset.sort;
-  renderActivity();
 });
 
 actList.addEventListener('click',function(e){
   var btn=e.target.closest('button[data-act]');
   if(!btn)return;
-  var id=btn.dataset.id;
+  if(Date.now()<suppressClickUntil)return;
   if(btn.dataset.act==='edit'){
-    var t=state.transactions.find(function(x){return x.id===id;});
+    var t=state.transactions.find(function(x){return x.id===btn.dataset.id;});
     if(t)openForm(t);
-  }else if(btn.dataset.act==='del'){
-    deleteTx(id);
   }
 });
 
-trendChart.addEventListener('click',function(e){
-  var r=e.target.closest('[data-y]');
-  if(!r)return;
-  view={y:parseInt(r.dataset.y,10),m:parseInt(r.dataset.m,10)};
-  switchTab('overview');
+searchWrap.addEventListener('click',function(e){
+  if(e.target===actSearch)return;
+  searchWrap.classList.add('expanded');
+  actSearch.focus();
 });
-donutChart.addEventListener('click',function(e){
-  var s=e.target.closest('[data-cat]');
-  if(!s)return;
-  activityFilters.cat=s.dataset.cat;
-  activityFilters.range='month';
-  activityFilters.month=monthKey();
-  switchTab('activity');
+actSearch.addEventListener('focus',function(){searchWrap.classList.add('expanded');});
+actSearch.addEventListener('blur',function(){
+  setTimeout(function(){if(!actSearch.value.trim())searchWrap.classList.remove('expanded');},120);
+});
+actSearch.addEventListener('input',debounce(function(){
+  activityFilters.q=actSearch.value;
+  searchWrap.classList.toggle('has-value',!!activityFilters.q);
+  renderActivity();
+},200));
+
+filterRangeBtn.addEventListener('click',function(){openFilterSheet('range');});
+filterCatBtn.addEventListener('click',function(){openFilterSheet('cat');});
+filterSortBtn.addEventListener('click',function(){openFilterSheet('sort');});
+
+$('sheetFilterBody').addEventListener('click',function(e){
+  var btn=e.target.closest('[data-opt]');
+  if(!btn)return;
+  var type=btn.dataset.opt,val=btn.dataset.val;
+  if(type==='range'){activityFilters.range=val;if(val==='month')activityFilters.month=monthKey();}
+  else if(type==='cat'){activityFilters.cat=val;}
+  else if(type==='sort'){activityFilters.sort=val;}
+  closeSheets();
+  renderActivity();
 });
 
 formCats.addEventListener('click',function(e){
@@ -1434,23 +1567,42 @@ sheetForm.querySelector('.seg').addEventListener('click',function(e){
   renderFormCurrency();
 });
 $('txForm').addEventListener('submit',submitForm);
-formDelete.addEventListener('click',function(){if(editingId)deleteTx(editingId);});
+formDelete.addEventListener('click',function(){if(editingId)deleteTxWithUndo(editingId);});
+
+trendChart.addEventListener('click',function(e){
+  var r=e.target.closest('[data-y]');
+  if(!r)return;
+  view={y:parseInt(r.dataset.y,10),m:parseInt(r.dataset.m,10)};
+  switchTab('summary');
+});
+donutChart.addEventListener('click',function(e){
+  var s=e.target.closest('[data-cat]');
+  if(!s)return;
+  activityFilters.cat=s.dataset.cat;
+  activityFilters.range='month';
+  activityFilters.month=monthKey();
+  switchTab('history');
+});
+
+profileSelect.addEventListener('change',function(){
+  state.profile=profileSelect.value;
+  save();
+  showToast('Profile: '+state.profile);
+});
+btnAppSettings.addEventListener('click',function(){
+  showToast('Advanced settings coming soon');
+});
 
 sBudget.addEventListener('change',function(){
   var v=parseFloat(sBudget.value);
   state.budget=(isFinite(v)&&v>=0)?v:0;
   saveDebounced();
-  if(activeTab==='overview')renderSummaryOnly();
+  if(activeTab==='summary')renderSummaryOnly();
 });
 sRate.addEventListener('change',function(){
   var v=parseFloat(sRate.value);
-  if(isFinite(v)&&v>0){
-    state.exchangeRate=v;
-    saveDebounced();
-    renderCatBudgets();
-  }else{
-    sRate.value=String(state.exchangeRate);
-  }
+  if(isFinite(v)&&v>0){state.exchangeRate=v;saveDebounced();renderCatBudgets();}
+  else sRate.value=String(state.exchangeRate);
 });
 sBase.addEventListener('click',function(e){
   var btn=e.target.closest('[data-base]');
@@ -1470,13 +1622,14 @@ sTheme.addEventListener('click',function(e){
 });
 sCats.addEventListener('click',function(e){
   var btn=e.target.closest('[data-del]');
-  if(btn)removeCategory(btn.dataset.del);
+  if(btn)removeCategoryWithUndo(btn.dataset.del);
 });
 sCatBudgetsEl.addEventListener('change',onCatBudgetInput);
 $('btnAddCat').addEventListener('click',addCategory);
-$('newCatName').addEventListener('keydown',function(e){
-  if(e.key==='Enter'){e.preventDefault();addCategory();}
-});
+$('newCatName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addCategory();}});
+$('btnOpenCategories').addEventListener('click',function(){renderSettingsCats();renderCatBudgets();openSheet(sheetCategory);});
+$('btnOpenBudget').addEventListener('click',function(){renderSettingsCats();renderCatBudgets();openSheet(sheetCategory);});
+
 $('btnExport').addEventListener('click',exportJSON);
 $('btnImport').addEventListener('click',function(){$('fileInput').click();});
 $('fileInput').addEventListener('change',function(e){
@@ -1488,11 +1641,10 @@ $('btnReset').addEventListener('click',resetAll);
 
 window.addEventListener('beforeunload',save);
 
-/* init */
 applyTheme();
 rebuildFormCatsCache();
 renderOverviewChips();
-activeTab=TABS.indexOf(state.lastTab)>=0?state.lastTab:'overview';
+activeTab=TABS.indexOf(state.lastTab)>=0?state.lastTab:'summary';
 switchTab(activeTab);
 })();
 </script>
