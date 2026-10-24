@@ -16,7 +16,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input{font:inherit;color:inherit}
 main{transition:filter .3s ease, transform .3s ease, opacity .3s ease}
 main.layer-hidden{filter:blur(4px);transform:scale(0.98);opacity:0.6;pointer-events:none}
-.sidebar{display:none;flex-direction:column;gap:4px;padding:20px 14px 16px;background:#fff;border-right:1px solid var(--c)}
+.sidebar{display:none;flex-direction:column;gap:4px;padding:20px 14px 16px;background:#fff;border-right:1px solid var(--c);overflow-y:auto}
 .sidebar .brand{font-size:15px;font-weight:700;letter-spacing:-.02em;padding:8px 12px 18px;color:var(--a);display:flex;justify-content:space-between;align-items:center}
 .sidebar .nav-btn{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:12px;flex:0 0 auto;font-size:14px;font-weight:600;color:var(--b)}
 .sidebar .nav-btn svg{width:20px;height:20px;flex-shrink:0}
@@ -28,9 +28,9 @@ main.layer-hidden{filter:blur(4px);transform:scale(0.98);opacity:0.6;pointer-eve
 .side-toggle{color:var(--b);padding:4px;border-radius:8px;transition:background .2s,color .2s;flex-shrink:0}
 .side-toggle:hover{background:var(--d);color:var(--a)}
 .side-toggle svg{width:20px;height:20px}
-.side-prof{display:none;align-items:center;gap:12px;padding:10px;margin:40px 0;border-radius:12px;background:var(--d);color:var(--a);transition:background .2s;width:100%;overflow:hidden;text-align:left}
-.side-prof:hover{background:#EAEAE4}
-.side-prof .prof-ic{background:#fff}
+.side-prof{display:none;align-items:center;gap:12px;padding:12px 14px;margin:400px 0 450px 0;border-radius:12px;background:transparent;color:var(--b);transition:background .2s,color .2s;width:100%;overflow:hidden;text-align:left}
+.side-prof:hover{background:var(--d);color:var(--a)}
+.side-prof .prof-ic{background:var(--d)}
 .side-prof-name{font-weight:600;font-size:14px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
 .sidebar.collapsed{padding:20px 8px 16px}
 .sidebar.collapsed .brand-text,
@@ -101,17 +101,14 @@ h1{font-size:clamp(22px,5.5vw,32px);line-height:1.3;letter-spacing:-.022em;font-
 .search-row{display:flex;gap:8px;align-items:center;padding:18px var(--e) 12px;min-height:56px}
 .search-row .search{flex:1 1 auto;transition:flex .3s var(--smooth),width .3s var(--smooth)}
 .search-row.focused .search{flex:1 1 100%;width:100%}
-.search-row.focused .filter-btn{flex:0;width:0;padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden;min-width:0}
+.search-row.focused .act-filters{flex:0;width:0;padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden;min-width:0}
 .search-row.focused #searchCancel{display:block}
+.act-filters{display:flex;gap:8px;flex-shrink:0}
 .chips-bar{display:flex;gap:7px;padding:0 var(--e) 12px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .chips-bar::-webkit-scrollbar{display:none}
 .chip{flex-shrink:0;border:1.5px solid var(--c);background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:500;color:#5C5D61;transition:.18s;white-space:nowrap}
 .chip:hover{border-color:#CFCFC7}
 .chip.active{background:var(--a);border-color:var(--a);color:#fff}
-.period-tabs{display:flex;gap:6px;padding:0 var(--e) 16px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
-.period-tabs::-webkit-scrollbar{display:none}
-.period-tabs button{flex:1 0 auto;min-width:42px;border:1.5px solid var(--c);background:#fff;border-radius:11px;padding:9px 6px;font-size:12px;font-weight:600;color:var(--b);transition:.18s;white-space:nowrap}
-.period-tabs button.active{background:var(--a);border-color:var(--a);color:#fff}
 .insight-card{background:var(--d);border-radius:20px;padding:22px 20px;margin-bottom:14px}
 .donut-wrap{position:relative;width:clamp(140px,40vw,200px);aspect-ratio:1;margin:0 auto 6px}
 .donut{width:100%;height:100%;transform:rotate(0)}
@@ -134,26 +131,26 @@ h1{font-size:clamp(22px,5.5vw,32px);line-height:1.3;letter-spacing:-.022em;font-
 .bar-stack{width:100%;display:flex;flex-direction:column;border-radius:4px 4px 0 0;overflow:hidden;min-height:3px;transition:height .6s cubic-bezier(.2,.7,.3,1)}
 .bar-segment{width:100%;min-height:2px}
 .bar-label{font-size:10px;color:var(--b);font-weight:500}
-.filter-btn{
-  flex:0 1 22%;
-  min-width:0;
-  appearance:none;-webkit-appearance:none;-moz-appearance:none;
-  border:1.5px solid var(--c);
-  background-color:var(--d);
-  border-radius:10px;
-  padding:8px 24px 8px 10px;
-  font-size:12.5px;font-weight:600;color:var(--a);
-  cursor:pointer;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B8C90' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
-  background-repeat:no-repeat;
-  background-position:right 6px center;
-  background-size:12px;
-  outline:none;
-  transition:all .3s var(--smooth);
-  text-overflow:ellipsis;
-}
-.filter-btn:hover{border-color:#CFCFC7}
-.filter-btn:focus{border-color:var(--a);background-color:#fff}
+
+/* --- Custom dropdown --- */
+.dropdown-wrap{position:relative}
+.trigger-btn{display:inline-flex;align-items:center;gap:8px;background:var(--d);border:1.5px solid transparent;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--a);transition:background .18s,border-color .18s,transform .15s;cursor:pointer}
+.trigger-btn:hover{border-color:#CFCFC7}
+.trigger-btn:active{transform:scale(0.96)}
+.trigger-btn svg{width:16px;height:16px;color:var(--b)}
+.trigger-btn .chevron{width:14px;height:14px;transition:transform .3s var(--spring)}
+.dropdown-wrap.on .trigger-btn .chevron{transform:rotate(180deg)}
+.menu-grid{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--spring);position:absolute;top:calc(100% + 8px);right:0;z-index:100}
+.dropdown-wrap.on .menu-grid{grid-template-rows:1fr}
+.menu-inner{overflow:hidden}
+.menu-content{background:#fff;border-radius:14px;padding:8px;width:220px;box-shadow:0 8px 30px -4px rgba(0,0,0,.12),0 0 0 1px var(--c);opacity:0;transform:translateY(-10px);transition:opacity .2s ease,transform .3s var(--spring);transform-origin:top right}
+.dropdown-wrap.on .menu-content{opacity:1;transform:translateY(0)}
+.menu-item{display:flex;align-items:center;width:100%;padding:12px 14px;border-radius:8px;color:var(--a);font-size:14px;font-weight:600;transition:background .15s;cursor:pointer;text-align:left}
+.menu-item:hover{background:var(--d)}
+.menu-item:active{background:#EAEAE4}
+.menu-item.active{background:var(--d);color:var(--a)}
+.menu-divider{height:1px;background:var(--c);margin:6px 8px}
+
 #mvMore .scroll{padding-top:24px}
 .more-row{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px 0;border-bottom:1px solid var(--c);transition:opacity .15s}
 .more-row:last-child{border-bottom:0}
@@ -313,8 +310,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .cal-day.today{border:1.5px solid var(--a)}
 .cal-dow{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--b);padding:4px 0}
 
-/* Global tactile feedback (applied after base styles so it takes precedence) */
-.btn, .chip, .txn, .nav-btn, .color-dot, .cur-item, .more-row, .list-row .lr-edit {
+/* Global tactile feedback */
+.btn, .chip, .txn, .nav-btn, .color-dot, .cur-item, .more-row, .list-row .lr-edit, .trigger-btn, .menu-item {
   transition: transform 0.15s var(--spring), background-color 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
 }
 .btn:active, .chip:active, .txn:active, .nav-btn:active, .color-dot:active, .cur-item:active, .more-row:active, .list-row .lr-edit:active {
@@ -349,7 +346,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class=brand>
     <span class="brand-text">Pocketracker</span>
     <button class="side-toggle" id="sideToggle" aria-label="Toggle sidebar">
-      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
     </button>
   </div>
   <button class="side-prof" id="sideProfBtn">
@@ -401,34 +398,71 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         <input id=searchInput placeholder="Search transactions" autocomplete=off>
         <button id=searchCancel>Cancel</button>
       </div>
-      <select id=filterPeriod class=filter-btn>
-        <option value=all>All time</option>
-        <option value=month selected>This month</option>
-        <option value=lastmonth>Last month</option>
-        <option value=year>This year</option>
-      </select>
-      <select id=sortBy class=filter-btn>
-        <option value=newest selected>Newest</option>
-        <option value=oldest>Oldest</option>
-        <option value=highest>Highest</option>
-        <option value=lowest>Lowest</option>
-      </select>
+      <div class="act-filters">
+        <div class="dropdown-wrap" id="actPeriodWrap">
+          <button class="trigger-btn" id="btnActPeriod">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            <span id="labelActPeriod">This Month</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="menu-grid">
+            <div class="menu-inner">
+              <div class="menu-content">
+                <button class="menu-item" data-val="all">All time</button>
+                <button class="menu-item active" data-val="month">This month</button>
+                <button class="menu-item" data-val="lastmonth">Last month</button>
+                <button class="menu-item" data-val="year">This year</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dropdown-wrap" id="actSortWrap">
+          <button class="trigger-btn" id="btnActSort">
+            <svg viewBox="0 0 24 24"><path d="M3 6h13M3 12h9M3 18h5"/><path d="M18 9l3 3-3 3M21 12h-6"/></svg>
+            <span id="labelActSort">Newest</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="menu-grid">
+            <div class="menu-inner">
+              <div class="menu-content">
+                <button class="menu-item active" data-val="newest">Newest</button>
+                <button class="menu-item" data-val="oldest">Oldest</button>
+                <button class="menu-item" data-val="highest">Highest</button>
+                <button class="menu-item" data-val="lowest">Lowest</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
     <div class=chips-bar id=activityChips></div>
     <div class=scroll id=activityList></div>
   </section>
 
   <section class=tab id=tabInsights>
-    <header class=topbar><h2>Insights</h2></header>
-    <div class=period-tabs id=periodTabs>
-      <button data-p=week>Week</button>
-      <button class=active data-p=month>Month</button>
-      <button data-p=year>Year</button>
-      <button data-p=q1>Q1</button>
-      <button data-p=q2>Q2</button>
-      <button data-p=q3>Q3</button>
-      <button data-p=q4>Q4</button>
-    </div>
+    <header class="topbar">
+      <div class="dropdown-wrap" id="insightPeriodWrap">
+        <button class="trigger-btn" id="btnInsightPeriod">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span id="labelInsightPeriod">This Month</span>
+          <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-grid">
+          <div class="menu-inner">
+            <div class="menu-content">
+              <button class="menu-item" data-val="week">This Week</button>
+              <button class="menu-item active" data-val="month">This Month</button>
+              <button class="menu-item" data-val="year">This Year</button>
+              <div class="menu-divider"></div>
+              <button class="menu-item" data-val="q1">Quarter 1</button>
+              <button class="menu-item" data-val="q2">Quarter 2</button>
+              <button class="menu-item" data-val="q3">Quarter 3</button>
+              <button class="menu-item" data-val="q4">Quarter 4</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
     <div class=scroll id=insightsContent></div>
   </section>
 
@@ -653,6 +687,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 </div>
 
 <input type=file id=importFile accept=".csv,text/csv" style="display:none">
+<input type=file id=importJSONFile accept=".json,application/json" style="display:none">
 <div id=toast></div>
 
 <script>
@@ -724,6 +759,9 @@ const s={tab:'home',profile:'Personal',p:[{id:'personal',name:'Personal',info:'J
 a:[{id:'cash',name:'Cash',type:'cash'},{id:'bank',name:'Bank',type:'bank'},{id:'card',name:'Credit Card',type:'card'}],
 t:[]};
 
+let actFilterPeriod='month';
+let actSortBy='newest';
+
 try{const st=JSON.parse(localStorage.getItem(K));if(st){s.profile=st.p||s.profile;s.p=st.ps||s.p;s.budget=st.b!==undefined?st.b:0;s.c=st.c||s.c;s.a=st.a||s.a;s.t=st.t||[];s.dateFormat=st.df||s.dateFormat;s.timeFormat=st.tf||s.timeFormat;s.customColors=st.cc||[];s.currency=st.cur||s.currency;s.currencyCode=st.curCode||s.currencyCode;const iM={'user':0,'card':1,'home':2,'briefcase':3,'users':4,'star':5,'target':6,'send':7,'gift':8,'book':9,'heart':10,'sparkles':11};s.p.forEach(p=>{if(typeof p.icon==='string')p.icon=iM[p.icon]||0})}}catch(e){}
 
 try{if(localStorage.getItem(KS)==='1'){document.body.classList.add('side-collapsed');document.querySelector('.sidebar').classList.add('collapsed')}}catch(e){}
@@ -732,6 +770,12 @@ s.c=s.c.map((c,i)=>{if(!c.color||!c.pastel){const d=D[i%D.length];c.color=c.colo
 s.p=s.p.map((p,i)=>{if(!p.color||!p.pastel){const d=D[i%D.length];p.color=p.color||d.color;p.pastel=p.pastel||d.pastel}return p});
 
 function sv(){localStorage.setItem(K,JSON.stringify({p:s.profile,ps:s.p,b:s.budget,c:s.c,a:s.a,t:s.t,df:s.dateFormat,tf:s.timeFormat,cc:s.customColors,cur:s.currency,curCode:s.currencyCode}))}
+
+// --- Profile identity (ID-based, prevents data leak) ---
+const getActiveProfileId = () => {
+  const p = s.p.find(x => x.name === s.profile) || s.p[0];
+  return p ? p.id : 'personal';
+};
 
 // --- Locale & currency helpers ---
 function getLocale(){
@@ -760,17 +804,13 @@ function amountPlaceholder(){
   return max>0?'0'+dec+'0'.repeat(max):'0';
 }
 
-// Currency display — absolute value, locale-aware
 const f=n=>{
-  try{
-    return new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).format(Math.abs(n));
-  }catch(e){return String(Math.abs(n))}
+  try{return new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).format(Math.abs(n))}
+  catch(e){return String(Math.abs(n))}
 };
-// Signed currency display — preserves negative sign in locale position
 const fSigned=n=>{
-  try{
-    return new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).format(n);
-  }catch(e){return String(n)}
+  try{return new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).format(n)}
+  catch(e){return String(n)}
 };
 
 function curSym(){
@@ -781,7 +821,6 @@ function curSym(){
   }catch(e){return s.currency}
 }
 
-// Clean user-typed string → grouped display string (for input oninput)
 function formatNum(val){
   if(val===''||val===null||val===undefined)return '';
   const {dec}=getSeparators();
@@ -801,7 +840,6 @@ function formatNum(val){
   return grouped;
 }
 
-// Convert stored number → display string for input field (edit / quick pick)
 function numberToInputDisplay(num){
   if(num===''||num===null||num===undefined)return '';
   const n=Number(num);
@@ -814,7 +852,6 @@ function numberToInputDisplay(num){
   return grouped;
 }
 
-// Parse locale-formatted input string → number
 function parseAmount(val){
   if(val===''||val===null||val===undefined)return NaN;
   const {dec}=getSeparators();
@@ -831,7 +868,9 @@ function parseAmount(val){
 const gCat=id=>s.c.find(c=>c.id===id)||{name:'Transfer',emoji:'⇄',color:'#6B6C70',pastel:'#E8E8E5'};
 const gA=id=>s.a.find(a=>a.id===id)||{name:'—'};
 const dk=d=>new Date(d).toDateString(),tK=dk(Date.now()),yK=dk(Date.now()-86400000);
-const aT=()=>s.t.filter(t=>(t.profileId||'personal')===s.profile);
+
+// --- Profile-scoped transaction filter (ID-based) ---
+const aT=()=>s.t.filter(t=>(t.profileId||s.p[0].id)===getActiveProfileId());
 
 function fT(t){
   if(!t)return '';
@@ -1041,6 +1080,58 @@ $('#calNext').onclick=()=>{calState.ym.m++;if(calState.ym.m>11){calState.ym.m=0;
 $('#calCancel').onclick=()=>cSub('sheetDatePicker');
 $('#calToday').onclick=()=>{A.date=gT();uDL();cSub('sheetDatePicker')};
 
+// --- Dropdown helper ---
+function closeAllDropdowns(){
+  document.querySelectorAll('.dropdown-wrap.on').forEach(x=>x.classList.remove('on'));
+}
+function toggleDropdown(wrapId){
+  const wrap=document.getElementById(wrapId);
+  if(!wrap)return;
+  const wasOn=wrap.classList.contains('on');
+  closeAllDropdowns();
+  if(!wasOn)wrap.classList.add('on');
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.dropdown-wrap')) closeAllDropdowns();
+});
+
+// Insights dropdown wiring
+$('#btnInsightPeriod').onclick=(e)=>{e.stopPropagation();toggleDropdown('insightPeriodWrap')};
+document.querySelectorAll('#insightPeriodWrap .menu-item').forEach(item=>{
+  item.onclick=()=>{
+    s.period=item.dataset.val;
+    $('#labelInsightPeriod').textContent=item.textContent;
+    document.querySelectorAll('#insightPeriodWrap .menu-item').forEach(x=>x.classList.remove('active'));
+    item.classList.add('active');
+    closeAllDropdowns();
+    rI();
+  };
+});
+
+// Activity filter dropdown wiring
+$('#btnActPeriod').onclick=(e)=>{e.stopPropagation();toggleDropdown('actPeriodWrap')};
+document.querySelectorAll('#actPeriodWrap .menu-item').forEach(item=>{
+  item.onclick=()=>{
+    actFilterPeriod=item.dataset.val;
+    $('#labelActPeriod').textContent=item.textContent;
+    document.querySelectorAll('#actPeriodWrap .menu-item').forEach(x=>x.classList.remove('active'));
+    item.classList.add('active');
+    closeAllDropdowns();
+    rA();
+  };
+});
+$('#btnActSort').onclick=(e)=>{e.stopPropagation();toggleDropdown('actSortWrap')};
+document.querySelectorAll('#actSortWrap .menu-item').forEach(item=>{
+  item.onclick=()=>{
+    actSortBy=item.dataset.val;
+    $('#labelActSort').textContent=item.textContent;
+    document.querySelectorAll('#actSortWrap .menu-item').forEach(x=>x.classList.remove('active'));
+    item.classList.add('active');
+    closeAllDropdowns();
+    rA();
+  };
+});
+
 // --- Sheets ---
 let iB=false;
 function updateMainLayer(){
@@ -1048,7 +1139,14 @@ function updateMainLayer(){
   const mainEl = document.querySelector('main');
   if(mainEl) mainEl.classList.toggle('layer-hidden', hasSheets);
 }
-function cS(){$$('.sheet').forEach(x=>{x.classList.remove('on','sub-hidden');x.style.zIndex=''});$('#sheetBg').classList.remove('on');$('#speeddial').classList.remove('on');if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();updateMainLayer()}
+function cS(){
+  closeAllDropdowns();
+  $$('.sheet').forEach(x=>{x.classList.remove('on','sub-hidden');x.style.zIndex=''});
+  $('#sheetBg').classList.remove('on');
+  $('#speeddial').classList.remove('on');
+  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+  updateMainLayer();
+}
 function oS(id,skipPush){cS();iB=true;$('#'+id).classList.add('on');$('#sheetBg').classList.add('on');if(!skipPush)history.pushState({layer:2},'');setTimeout(()=>{iB=false},300);updateMainLayer()}
 function oS2(id,skipPush){
   $$('.sheet.on').forEach(x => {
@@ -1166,7 +1264,7 @@ $('#addSave').onclick=()=>{
     note:$('#addNote').value.trim(),
     date:A.date,
     time:A.time,
-    profileId:s.profile,
+    profileId:getActiveProfileId(),
     createdAt:Date.now()
   };
   if(A.editId){const i=s.t.findIndex(t=>t.id===A.editId);s.t[i]=txn;tt('Updated')}
@@ -1250,7 +1348,9 @@ function rM(){
     ]},
     {g:'Data',items:[
       {act:'import',ic:'import',title:'Import CSV',sub:'Merge transactions from a file'},
-      {act:'export',ic:'export',title:'Export CSV',sub:'Download all transactions'}
+      {act:'export',ic:'export',title:'Export CSV',sub:'Download all transactions'},
+      {act:'backup-export',ic:'export',title:'Export Backup',sub:'Save all config & data (JSON)'},
+      {act:'backup-import',ic:'import',title:'Import Backup',sub:'Restore from JSON file'}
     ]}
   ];
   let html='';
@@ -1262,7 +1362,19 @@ function rM(){
   });
   html+='<button class="bd" id="deleteAllBtn">Delete all data</button><div class="about">Pocketracker v0.0.01<br>'+s.currency+' · '+s.t.length+' transactions</div>';
   $('#moreContent').innerHTML=html;
-  $$('#moreContent .more-row').forEach(b=>{b.onclick=()=>{const act=b.dataset.act;if(act==='budget')return oB();if(act==='currency')return oCur();if(act==='date-format')return oDF();if(act==='manage-profiles')return sMV('profiles');if(act==='categories')return sMV('categories');if(act==='import')return $('#importFile').click();if(act==='export')return eCSV();return tt('Coming soon')}});
+  $$('#moreContent .more-row').forEach(b=>{b.onclick=()=>{
+    const act=b.dataset.act;
+    if(act==='budget')return oB();
+    if(act==='currency')return oCur();
+    if(act==='date-format')return oDF();
+    if(act==='manage-profiles')return sMV('profiles');
+    if(act==='categories')return sMV('categories');
+    if(act==='import')return $('#importFile').click();
+    if(act==='export')return eCSV();
+    if(act==='backup-export')return exportJSON();
+    if(act==='backup-import')return $('#importJSONFile').click();
+    return tt('Coming soon');
+  }});
   $('#deleteAllBtn').onclick=()=>{pD={type:'reset'};oDC('Reset all data?','All transactions, categories, and profiles will be erased permanently.','Yes, reset')};
 }
 
@@ -1376,6 +1488,7 @@ function hI(file){
       const iI=idx('id'),iT=idx('type'),iA=idx('amount'),iC=idx('category'),iAc=idx('account'),iF=idx('from'),iTo=idx('to'),iN=idx('note'),iD=idx('date');
       if(iT<0||iA<0||iD<0){tt('Invalid CSV header');return}
       let added=0,skipped=0;
+      const activePid=getActiveProfileId();
       for(let i=1;i<rows.length;i++){
         const w=rows[i];if(!w.length||w.every(x=>!String(x).trim()))continue;
         const ty=String(w[iT]||'').trim().toLowerCase(),am=parseFloat(w[iA]),dt=String(w[iD]||'').trim();
@@ -1385,7 +1498,7 @@ function hI(file){
         else{c=rCat(w[iC],ty);a=rAcc(w[iAc])}
         let id=iI>=0?String(w[iI]||'').trim():'';
         if(!id||s.t.some(x=>x.id===id))id=uid();
-        s.t.push({id,type:ty,amount:am,categoryId:c,accountId:a,fromId:fr,toId:to,note:iN>=0?String(w[iN]||'').trim():'',date:dt,profileId:s.profile,createdAt:Date.now()});added++;
+        s.t.push({id,type:ty,amount:am,categoryId:c,accountId:a,fromId:fr,toId:to,note:iN>=0?String(w[iN]||'').trim():'',date:dt,profileId:activePid,createdAt:Date.now()});added++;
       }
       sv();R();
       if(added)tt('Imported '+added+' transaction'+(added>1?'s':'')+(skipped?' · '+skipped+' skipped':''));
@@ -1405,6 +1518,45 @@ function eCSV(){
   a.href=url;a.download='pocketracker.csv';a.click();URL.revokeObjectURL(url);
   tt('Exported '+s.t.length+' rows');
 }
+
+// --- Full JSON Backup Export / Import ---
+function exportJSON(){
+  const data = JSON.stringify(s, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pocketracker_backup.json'; a.click();
+  URL.revokeObjectURL(url);
+  tt('Backup exported');
+}
+
+function importJSON(file){
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const data = JSON.parse(rd.result);
+      if(!data || (!data.p && !data.ps)) throw new Error('Invalid format');
+      s.profile = data.p || s.profile;
+      s.p = data.ps || s.p;
+      s.budget = data.b !== undefined ? data.b : 0;
+      s.c = data.c || s.c;
+      s.a = data.a || s.a;
+      s.t = data.t || [];
+      s.dateFormat = data.df || s.dateFormat;
+      s.timeFormat = data.tf || s.timeFormat;
+      s.customColors = data.cc || [];
+      s.currency = data.cur || s.currency;
+      s.currencyCode = data.curCode || s.currencyCode;
+
+      sv(); R(); cS();
+      tt('Backup restored successfully');
+    } catch(e) {
+      tt('Invalid backup file');
+    }
+  };
+  rd.readAsText(file);
+}
+$('#importJSONFile').onchange=e=>{const f=e.target.files&&e.target.files[0];if(f)importJSON(f);e.target.value=''};
 
 // --- Home ---
 function rH(){
@@ -1450,14 +1602,14 @@ function tH(t){
   return `<button class="txn" data-id="${t.id}"><span class="txn-ic" style="background:${bg}">${cat.emoji}</span><span class="txn-bd"><strong>${esc(cat.name)}${t.note?' · '+esc(t.note):''}</strong><span>${esc(meta)} · ${fD(t.date,t.time,s.dateFormat)}</span></span><span class="txn-amt ${cls}">${amtDisplay}</span></button>`;
 }
 
-// --- Activity (with filters + sorting) ---
+// --- Activity (with filters + sorting via custom dropdowns) ---
 function rA(){
   const act=aT();
   $('#activityChips').innerHTML=`<button class="chip ${!s.filterCat?'active':''}" data-cat="">All</button>`+s.c.map(c=>`<button class="chip ${s.filterCat===c.id?'active':''}" data-cat="${c.id}">${c.emoji} ${esc(c.name)}</button>`).join('');
   $$('#activityChips .chip').forEach(b=>{b.onclick=()=>{s.filterCat=b.dataset.cat||null;rA()}});
 
-  const fp=($('#filterPeriod')&&$('#filterPeriod').value)||'all';
-  const sb=($('#sortBy')&&$('#sortBy').value)||'newest';
+  const fp=actFilterPeriod;
+  const sb=actSortBy;
 
   let list=[...act];
   const now=new Date();
@@ -1485,8 +1637,6 @@ function rA(){
   $$('#activityList .txn').forEach(el=>el.onclick=()=>oD(el.dataset.id));
 }
 $('#searchInput').oninput=e=>{s.search=e.target.value.trim();rA()};
-$('#filterPeriod').onchange=()=>rA();
-$('#sortBy').onchange=()=>rA();
 
 // Search focus / cancel handlers
 const searchRow=document.querySelector('.search-row');
@@ -1494,7 +1644,7 @@ const searchInputEl=$('#searchInput');
 const searchCancelEl=$('#searchCancel');
 if(searchInputEl){
   searchInputEl.addEventListener('focus',()=>{
-    if(window.innerWidth<720)searchRow.classList.add('focused');
+    if(window.innerWidth<720){searchRow.classList.add('focused');closeAllDropdowns()}
   });
   searchInputEl.addEventListener('blur',()=>{
     searchRow.classList.remove('focused');
@@ -1513,7 +1663,12 @@ if(searchCancelEl){
 // --- Insights ---
 function rI(){
   const act=aT(),period=s.period;
-  $$('#periodTabs button').forEach(b=>b.classList.toggle('active',b.dataset.p===period));
+
+  const labels={week:'This Week',month:'This Month',year:'This Year',q1:'Quarter 1',q2:'Quarter 2',q3:'Quarter 3',q4:'Quarter 4'};
+  const lblEl=$('#labelInsightPeriod');
+  if(lblEl) lblEl.textContent=labels[period]||'This Month';
+  document.querySelectorAll('#insightPeriodWrap .menu-item').forEach(x=>x.classList.toggle('active',x.dataset.val===period));
+
   const list=act.filter(t=>iP(t,period)&&t.type==='expense');
   if(!list.length){$('#insightsContent').innerHTML=`<p class="empty"><svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20v-10"/></svg>Charts unlock after you log a few expenses in this period.</p>`;return}
   const total=list.reduce((sum,t)=>sum+t.amount,0);
@@ -1541,20 +1696,16 @@ function rI(){
     <div class="stat-grid"><div class="stat"><div class="stat-label">Transactions</div><div class="stat-val">${cnt}</div><div class="stat-sub">avg ${f(avg)}</div></div><div class="stat"><div class="stat-label">Daily avg</div><div class="stat-val">${f(dAvg)}</div><div class="stat-sub">over ${days} days</div></div></div>
     <div class="insight-card"><div class="stat-label" style="margin-bottom:10px">Last 7 days</div><div class="bar-chart">${trend.map(d=>`<div class="bar-col"><div class="bar-stack" style="height:${d.val/maxT*100}%">${d.segments.map(sg=>`<div class="bar-segment" style="height:${sg.pct}%;background:${sg.color}"></div>`).join('')}</div><div class="bar-label">${d.label}</div></div>`).join('')}</div></div>`;
 }
-$('#periodTabs').onclick=e=>{const b=e.target.closest('button[data-p]');if(!b)return;s.period=b.dataset.p;rI()};
 
 // --- Profile header + currency display + sidebar sync ---
 function rPH(){
   const p=s.p.find(x=>x.name===s.profile)||s.p[0];
-  // Topbar (mobile)
   $('#profName').textContent=s.profile;
   const i=$('#profBtn .prof-ic');i.innerHTML=ic(p?p.icon:0);if(p&&p.pastel)i.style.background=p.pastel;
-  // Sidebar (desktop)
   const sideIcon=$('#sideProfIcon');
   const sideName=$('#sideProfName');
   if(sideIcon){sideIcon.innerHTML=ic(p?p.icon:0);if(p&&p.pastel)sideIcon.style.background=p.pastel}
   if(sideName)sideName.textContent=s.profile;
-  // Currency
   const cur=CURRENCIES.find(c=>c.cur===s.currency)||CURRENCIES[11];
   const flagEl=$('#curFlag'),codeEl=$('#curCode');
   if(flagEl)flagEl.textContent=cur.flag;
@@ -1640,6 +1791,7 @@ $('#sbAdd').onclick=()=>oA('expense');
 
 // --- History / Back navigation ---
 function handleBack(){
+  if(document.querySelectorAll('.dropdown-wrap.on').length){closeAllDropdowns();return}
   const sub=$$('.sheet.on').filter(x=>x.style.zIndex==='35');
   if(sub.length){cSub(sub[sub.length-1].id);return}
   if($$('.sheet.on').length){cS();return}
