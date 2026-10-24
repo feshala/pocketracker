@@ -339,11 +339,11 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div class=scroll>
       <div class="card anim-in" id=homeCard style="animation-delay:.1s">
         <div class=sum-icon><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3.5"/><path d="M3 10.5h18"/><circle cx="17" cy="14.5" r="1.3" fill="currentColor" stroke="none"/></svg></div>
-        <p class=sum-amount id=sumAmount>$0.00</p>
+        <p class=sum-amount id=sumAmount>—</p>
         <p class=sum-label id=sumLabel>This month</p>
         <p class=sum-hint>Your summary will appear here after your first entry.</p>
         <div class=sum-budget id=sumBudget>
-          <div class=sum-budget-top><span id=sumBudgetPct>0% used</span><span id=sumBudgetTotal>of $0.00</span></div>
+          <div class=sum-budget-top><span id=sumBudgetPct>0% used</span><span id=sumBudgetTotal></span></div>
           <div class=sum-bar id=sumBar><i></i></div>
         </div>
         <div class=card-net id=sumNet></div>
@@ -478,7 +478,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <button data-t=income>Income</button>
   </div>
   <label class=label>Amount</label>
-  <div class=field><span class=cur id=addCur>$</span><input id=addAmount inputmode=decimal placeholder=0.00 autocomplete=off></div>
+  <div class=field><span class=cur id=addCur>USD</span><input id=addAmount inputmode=decimal placeholder="0" autocomplete=off></div>
   <label class=label>Note <span class=opt>(optional)</span></label>
   <div class="field note"><input id=addNote placeholder="e.g. Coffee" maxlength=60 autocomplete=off></div>
   <label class=label>Date &amp; Time</label>
@@ -505,14 +505,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <h2 class=sheet-title>Monthly budget</h2>
   <p class=sheet-sub>A soft cap keeps you aware of your spending.</p>
   <label class=label>Amount</label>
-  <div class=field><span class=cur id=budCur>$</span><input id=budInput inputmode=decimal placeholder=0.00 autocomplete=off></div>
+  <div class=field><span class=cur id=budCur>USD</span><input id=budInput inputmode=decimal placeholder="0" autocomplete=off></div>
   <label class=label>Quick pick</label>
-  <div class=chips id=budQuick>
-    <button class=chip>$100</button>
-    <button class=chip>$300</button>
-    <button class=chip>$500</button>
-    <button class=chip>$1000</button>
-  </div>
+  <div class=chips id=budQuick></div>
   <div class=sheet-actions>
     <button class="btn alt" id=budCancel>Cancel</button>
     <button class="btn primary" id=budSave>Set budget</button>
@@ -624,7 +619,20 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],uid
 const K='pocketracker_state';
 const D=[{color:'#E85C4A',pastel:'#FCE4E1'},{color:'#D4951F',pastel:'#FAEDD4'},{color:'#F0B429',pastel:'#FDF1D6'},{color:'#2D9E5C',pastel:'#D9F1E3'},{color:'#2AA9A1',pastel:'#D6EFED'},{color:'#3B82F6',pastel:'#DBEAFE'},{color:'#6366F1',pastel:'#E0E2FD'},{color:'#8B5CF6',pastel:'#EDE5FD'},{color:'#EC4899',pastel:'#FBE2F0'},{color:'#6B6C70',pastel:'#E8E8E5'}];
 const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],ML=['January','February','March','April','May','June','July','August','September','October','November','December'],DL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const CURRENCIES=[{code:'AU',cur:'AUD',flag:'🇦🇺'},{code:'CA',cur:'CAD',flag:'🇨🇦'},{code:'CN',cur:'CNY',flag:'🇨🇳'},{code:'DE',cur:'EUR',flag:'🇩🇪'},{code:'IN',cur:'INR',flag:'🇮🇳'},{code:'ID',cur:'IDR',flag:'🇮🇩'},{code:'JP',cur:'JPY',flag:'🇯🇵'},{code:'SG',cur:'SGD',flag:'🇸🇬'},{code:'KR',cur:'KRW',flag:'🇰🇷'},{code:'CH',cur:'CHF',flag:'🇨🇭'},{code:'GB',cur:'GBP',flag:'🇬🇧'},{code:'US',cur:'USD',flag:'🇺🇸'}];
+const CURRENCIES=[
+  {code:'AU',cur:'AUD',flag:'🇦🇺',locale:'en-AU'},
+  {code:'CA',cur:'CAD',flag:'🇨🇦',locale:'en-CA'},
+  {code:'CN',cur:'CNY',flag:'🇨🇳',locale:'zh-CN'},
+  {code:'DE',cur:'EUR',flag:'🇩🇪',locale:'de-DE'},
+  {code:'IN',cur:'INR',flag:'🇮🇳',locale:'en-IN'},
+  {code:'ID',cur:'IDR',flag:'🇮🇩',locale:'id-ID'},
+  {code:'JP',cur:'JPY',flag:'🇯🇵',locale:'ja-JP'},
+  {code:'SG',cur:'SGD',flag:'🇸🇬',locale:'en-SG'},
+  {code:'KR',cur:'KRW',flag:'🇰🇷',locale:'ko-KR'},
+  {code:'CH',cur:'CHF',flag:'🇨🇭',locale:'de-CH'},
+  {code:'GB',cur:'GBP',flag:'🇬🇧',locale:'en-GB'},
+  {code:'US',cur:'USD',flag:'🇺🇸',locale:'en-US'}
+];
 function hP(hex){const r=parseInt(hex.slice(1,3),16)||0,g=parseInt(hex.slice(3,5),16)||0,b=parseInt(hex.slice(5,7),16)||0,m=.78;return '#'+[Math.round(r+(255-r)*m),Math.round(g+(255-g)*m),Math.round(b+(255-b)*m)].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase()}
 function gT(){const n=new Date();return new Date(n.getTime()-n.getTimezoneOffset()*60000).toISOString().slice(0,10)}
 function gTime(){const n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())}
@@ -682,40 +690,101 @@ s.p=s.p.map((p,i)=>{if(!p.color||!p.pastel){const d=D[i%D.length];p.color=p.colo
 
 function sv(){localStorage.setItem(K,JSON.stringify({p:s.profile,ps:s.p,b:s.budget,c:s.c,a:s.a,t:s.t,df:s.dateFormat,tf:s.timeFormat,cc:s.customColors,cur:s.currency,curCode:s.currencyCode}))}
 
-// --- Locale-aware number formatting ---
+// --- Locale & currency helpers ---
+function getLocale(){
+  const c=CURRENCIES.find(x=>x.cur===s.currency);
+  return c?c.locale:'en-US';
+}
 function getSeparators(){
-  const commaDec=['ID','DE','CH'].includes(s.currencyCode);
-  return commaDec?{thou:'.',dec:','}:{thou:',',dec:'.'};
+  const locale=getLocale();
+  const parts=new Intl.NumberFormat(locale).formatToParts(1234.5);
+  let thou=',',dec='.';
+  parts.forEach(p=>{
+    if(p.type==='group')thou=p.value;
+    if(p.type==='decimal')dec=p.value;
+  });
+  return {thou,dec};
 }
-function formatNum(val){
-  if(val===''||val===null||val===undefined)return '';
-  const {thou,dec}=getSeparators();
-  let str=String(val);
-  str=str.replace(/[^\d.,]/g,'');
-  if(thou===',')str=str.replace(/,/g,'');
-  else if(thou==='.')str=str.replace(/\./g,'');
-  str=str.replace(new RegExp('\\'+dec,'g'),'.');
-  let parts=str.split('.');
-  let intPart=parts.shift()||'0';
-  let decPart=parts.join('').slice(0,2);
-  intPart=intPart.replace(/\B(?=(\d{3})+(?!\d))/g,thou);
-  return decPart.length>0?intPart+dec+decPart:intPart;
+function getCurrencyDigits(){
+  try{
+    const opts=new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).resolvedOptions();
+    return {min:opts.minimumFractionDigits,max:opts.maximumFractionDigits};
+  }catch(e){return {min:2,max:2}}
 }
-function parseAmount(val){
-  if(val===''||val===null||val===undefined)return NaN;
-  let str=String(val).replace(/[^\d.,]/g,'');
-  if(!str)return NaN;
-  const lastSep=Math.max(str.lastIndexOf('.'),str.lastIndexOf(','));
-  if(lastSep>=0){
-    const intPart=str.slice(0,lastSep).replace(/[.,]/g,'');
-    const decPart=str.slice(lastSep+1).replace(/[.,]/g,'');
-    return parseFloat((intPart||'0')+'.'+decPart);
-  }
-  return parseFloat(str.replace(/[.,]/g,''));
+function amountPlaceholder(){
+  const {dec}=getSeparators();
+  const {max}=getCurrencyDigits();
+  return max>0?'0'+dec+'0'.repeat(max):'0';
 }
 
-const f=n=>{try{return new Intl.NumberFormat('en-US',{style:'currency',currency:s.currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(Math.abs(n))}catch(e){return '$'+Math.abs(n).toFixed(2)}};
-const curSym=()=>{try{return new Intl.NumberFormat('en-US',{style:'currency',currency:s.currency,minimumFractionDigits:0,maximumFractionDigits:0}).format(0).replace(/[0-9.,]/g,'').trim()||'$'}catch(e){return '$'}};
+// Currency display — absolute value, locale-aware
+const f=n=>{
+  try{
+    return new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).format(Math.abs(n));
+  }catch(e){return String(Math.abs(n))}
+};
+// Signed currency display — preserves negative sign in locale position
+const fSigned=n=>{
+  try{
+    return new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).format(n);
+  }catch(e){return String(n)}
+};
+
+function curSym(){
+  try{
+    const parts=new Intl.NumberFormat(getLocale(),{style:'currency',currency:s.currency}).formatToParts(0);
+    const cp=parts.find(p=>p.type==='currency');
+    return cp?cp.value:s.currency;
+  }catch(e){return s.currency}
+}
+
+// Clean user-typed string → grouped display string (for input oninput)
+function formatNum(val){
+  if(val===''||val===null||val===undefined)return '';
+  const {dec}=getSeparators();
+  const {max}=getCurrencyDigits();
+  const decEsc=dec.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  let str=String(val).replace(new RegExp('[^0-9'+decEsc+']','g'),'');
+  if(str==='')return '';
+  const endsWithDecimal=str.endsWith(dec);
+  const parts=str.split(dec);
+  let intPart=parts[0]||'';
+  let decPart=parts.slice(1).join('').slice(0,max);
+  intPart=intPart.replace(/^0+(?=\d)/,'');
+  if(intPart==='')intPart='0';
+  const grouped=new Intl.NumberFormat(getLocale(),{useGrouping:true,maximumFractionDigits:0}).format(parseInt(intPart,10));
+  if(decPart.length>0)return grouped+dec+decPart;
+  if(endsWithDecimal&&max>0)return grouped+dec;
+  return grouped;
+}
+
+// Convert stored number → display string for input field (edit / quick pick)
+function numberToInputDisplay(num){
+  if(num===''||num===null||num===undefined)return '';
+  const n=Number(num);
+  if(!Number.isFinite(n))return '';
+  const {dec}=getSeparators();
+  const str=String(Math.abs(n));
+  const [intStr,decStr]=str.split('.');
+  const grouped=new Intl.NumberFormat(getLocale(),{useGrouping:true,maximumFractionDigits:0}).format(parseInt(intStr,10)||0);
+  if(decStr)return grouped+dec+decStr;
+  return grouped;
+}
+
+// Parse locale-formatted input string → number
+function parseAmount(val){
+  if(val===''||val===null||val===undefined)return NaN;
+  const {dec}=getSeparators();
+  const decEsc=dec.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  let str=String(val).replace(new RegExp('[^0-9'+decEsc+']','g'),'');
+  if(!str)return NaN;
+  const parts=str.split(dec);
+  const intPart=(parts[0]||'').replace(/\D/g,'');
+  const decPart=parts.length>1?(parts[1]||'').replace(/\D/g,''):'';
+  if(!intPart&&!decPart)return NaN;
+  return parseFloat((intPart||'0')+'.'+decPart);
+}
+
 const gCat=id=>s.c.find(c=>c.id===id)||{name:'Transfer',emoji:'⇄',color:'#6B6C70',pastel:'#E8E8E5'};
 const gA=id=>s.a.find(a=>a.id===id)||{name:'—'};
 const dk=d=>new Date(d).toDateString(),tK=dk(Date.now()),yK=dk(Date.now()-86400000);
@@ -1006,9 +1075,10 @@ function oA(type,txn){
   A.accountId=txn?txn.accountId:s.a[0].id;
   A.date=txn?txn.date:gT();
   A.time=txn?(txn.time||gTime()):gTime();
-  $('#addAmount').value=txn?formatNum(String(txn.amount)):'';
+  $('#addAmount').value=txn?numberToInputDisplay(txn.amount):'';
   $('#addNote').value=txn?(txn.note||''):'';
-  $('#addCur').textContent=curSym();
+  $('#addCur').textContent=s.currency;
+  $('#addAmount').placeholder=amountPlaceholder();
   uDL();uTL();
   rAS();
   oS('sheetAdd');
@@ -1067,11 +1137,13 @@ $('#addSave').onclick=()=>{
 function oD(id){
   const t=s.t.find(x=>x.id===id);if(!t)return;
   const cat=t.type==='transfer'?{emoji:'⇄',name:'Transfer',pastel:'#E8E8E5'}:gCat(t.categoryId);
-  const sign=t.type==='income'?'+':t.type==='expense'?'-':'';
-  const amtCls=t.type==='income'?'pos':'';
+  let amtDisplay='',amtCls='';
+  if(t.type==='income'){amtDisplay='+'+f(t.amount);amtCls='pos'}
+  else if(t.type==='expense'){amtDisplay=fSigned(-t.amount)}
+  else{amtDisplay=f(t.amount)}
   const meta=t.type==='transfer'?`${esc(gA(t.fromId).name)} → ${esc(gA(t.toId).name)}`:esc(gA(t.accountId).name);
   const bg=cat.pastel||'#F5F5F0';
-  $('#detailContent').innerHTML=`<div class="det-head"><div class="det-ic" style="background:${bg}">${cat.emoji}</div><div class="det-bd"><strong>${esc(cat.name)}</strong><span>${meta}</span></div></div><p class="det-amount ${amtCls}">${sign}${f(t.amount)}</p><div class="det-row"><span>When</span><span>${fD(t.date,t.time,s.dateFormat)}</span></div>${t.note?`<div class="det-row"><span>Note</span><span>${esc(t.note)}</span></div>`:''}<div class="sheet-actions"><button class="btn danger" id="detDel">Delete</button><button class="btn primary" id="detEdit">Edit</button></div>`;
+  $('#detailContent').innerHTML=`<div class="det-head"><div class="det-ic" style="background:${bg}">${cat.emoji}</div><div class="det-bd"><strong>${esc(cat.name)}</strong><span>${meta}</span></div></div><p class="det-amount ${amtCls}">${amtDisplay}</p><div class="det-row"><span>When</span><span>${fD(t.date,t.time,s.dateFormat)}</span></div>${t.note?`<div class="det-row"><span>Note</span><span>${esc(t.note)}</span></div>`:''}<div class="sheet-actions"><button class="btn danger" id="detDel">Delete</button><button class="btn primary" id="detEdit">Edit</button></div>`;
   oS('sheetDetail');
   $('#detDel').onclick=()=>{pD={type:'transaction',id:id};oDC('Delete transaction?','This action cannot be undone.','Yes, delete')};
   $('#detEdit').onclick=()=>{cS();setTimeout(()=>oA(t.type,t),200)};
@@ -1079,16 +1151,16 @@ function oD(id){
 
 // --- Budget ---
 function oB(){
-  $('#budInput').value=s.budget?formatNum(String(s.budget)):'';
-  $('#budCur').textContent=curSym();
-  const sym=curSym();
-  $('#budQuick').innerHTML=[100,300,500,1000].map(v=>`<button class="chip" data-val="${v}">${sym}${v}</button>`).join('');
+  $('#budInput').value=s.budget?numberToInputDisplay(s.budget):'';
+  $('#budCur').textContent=s.currency;
+  $('#budInput').placeholder=amountPlaceholder();
+  $('#budQuick').innerHTML=[100,300,500,1000].map(v=>`<button class="chip" data-val="${v}">${f(v)}</button>`).join('');
   oS('sheetBudget');
 }
 $('#budInput').oninput=e=>{e.target.value=formatNum(e.target.value)};
 $('#budQuick').onclick=e=>{
   const b=e.target.closest('.chip');if(!b)return;
-  $('#budInput').value=formatNum(b.dataset.val);
+  $('#budInput').value=numberToInputDisplay(Number(b.dataset.val));
   $$('#budQuick .chip').forEach(c=>c.classList.toggle('active',c===b));
 };
 $('#budCancel').onclick=cS;
@@ -1297,7 +1369,7 @@ function rH(){
   const mt=act.filter(t=>iP(t,'month'));
   const exp=mt.filter(t=>t.type==='expense').reduce((sum,t)=>sum+t.amount,0);
   const inc=mt.filter(t=>t.type==='income').reduce((sum,t)=>sum+t.amount,0);
-  if(act.length===0){card.classList.remove('filled','hasexpense','hasbudget');$('#sumAmount').textContent='$0.00';$('#sumLabel').textContent='This month'}
+  if(act.length===0){card.classList.remove('filled','hasexpense','hasbudget');$('#sumAmount').textContent=f(0);$('#sumLabel').textContent='This month'}
   else{
     card.classList.add('filled');
     const sumEl=$('#sumAmount');
@@ -1326,11 +1398,13 @@ function rH(){
 function tH(t){
   const isT=t.type==='transfer';
   const cat=isT?{emoji:'⇄',name:'Transfer',pastel:'#E8E8E5'}:gCat(t.categoryId);
-  const amt=t.type==='income'?'+':t.type==='expense'?'-':'';
-  const cls=t.type==='income'?'pos':t.type==='expense'?'neg':'neu';
+  let amtDisplay='',cls;
+  if(t.type==='income'){amtDisplay='+'+f(t.amount);cls='pos'}
+  else if(t.type==='expense'){amtDisplay=fSigned(-t.amount);cls='neg'}
+  else{amtDisplay=f(t.amount);cls='neu'}
   const meta=isT?`${gA(t.fromId).name} → ${gA(t.toId).name}`:gA(t.accountId).name;
   const bg=cat.pastel||'#F5F5F0';
-  return `<button class="txn" data-id="${t.id}"><span class="txn-ic" style="background:${bg}">${cat.emoji}</span><span class="txn-bd"><strong>${esc(cat.name)}${t.note?' · '+esc(t.note):''}</strong><span>${esc(meta)} · ${fD(t.date,t.time,s.dateFormat)}</span></span><span class="txn-amt ${cls}">${amt}${f(t.amount)}</span></button>`;
+  return `<button class="txn" data-id="${t.id}"><span class="txn-ic" style="background:${bg}">${cat.emoji}</span><span class="txn-bd"><strong>${esc(cat.name)}${t.note?' · '+esc(t.note):''}</strong><span>${esc(meta)} · ${fD(t.date,t.time,s.dateFormat)}</span></span><span class="txn-amt ${cls}">${amtDisplay}</span></button>`;
 }
 
 // --- Activity (with filters + sorting) ---
@@ -1364,7 +1438,7 @@ function rA(){
 
   if(!list.length){$('#activityList').innerHTML=`<p class="empty"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>${act.length?'No transactions match this filter.':'No transactions yet. Tap + to add.'}</p>`;return}
   const groups={};list.forEach(t=>{(groups[t.date]=groups[t.date]||[]).push(t)});
-  $('#activityList').innerHTML=Object.keys(groups).sort((x,y)=>y.localeCompare(x)).map(dt=>{const dT=groups[dt].filter(t=>t.type==='expense').reduce((sum,t)=>sum+t.amount,0);return `<div class="day-ttl"><span>${fD(dt,null,s.dateFormat)}</span><span>${dT?'- '+f(dT):''}</span></div>`+groups[dt].map(tH).join('')}).join('');
+  $('#activityList').innerHTML=Object.keys(groups).sort((x,y)=>y.localeCompare(x)).map(dt=>{const dT=groups[dt].filter(t=>t.type==='expense').reduce((sum,t)=>sum+t.amount,0);return `<div class="day-ttl"><span>${fD(dt,null,s.dateFormat)}</span><span>${dT?'− '+f(dT):''}</span></div>`+groups[dt].map(tH).join('')}).join('');
   $$('#activityList .txn').forEach(el=>el.onclick=()=>oD(el.dataset.id));
 }
 $('#searchInput').oninput=e=>{s.search=e.target.value.trim();rA()};
