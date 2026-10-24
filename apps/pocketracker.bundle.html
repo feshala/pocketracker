@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Pocketracker</title>
 <style>
-:root{--a:#111214;--b:#8B8C90;--c:#E8E8E2;--d:#F5F5F0;--nav-h:84px;--e:clamp(16px,5vw,40px);--r-card:clamp(18px,4vw,26px);--gap:clamp(10px,2vw,16px);--spring:cubic-bezier(0.175,0.885,0.32,1.275);--smooth:cubic-bezier(0.16,1,0.3,1)}
+:root{--a:#111214;--b:#8B8C90;--c:#E8E8E2;--d:#F5F5F0;--nav-h:84px;--e:clamp(16px,5vw,40px);--r-card:clamp(18px,4vw,26px);--gap:clamp(10px,2vw,16px);--spring:cubic-bezier(0.175,0.885,0.32,1.275);--smooth:cubic-bezier(0.16,1,0.3,1);--side-w:240px}
 *{box-sizing:border-box;margin:0;padding:0}
 ::-webkit-scrollbar{width:0px;background:transparent}
 html,body{min-height:100dvh}
@@ -17,7 +17,7 @@ input{font:inherit;color:inherit}
 main{transition:filter .3s ease, transform .3s ease, opacity .3s ease}
 main.layer-hidden{filter:blur(4px);transform:scale(0.98);opacity:0.6;pointer-events:none}
 .sidebar{display:none;flex-direction:column;gap:4px;padding:20px 14px 16px;background:#fff;border-right:1px solid var(--c)}
-.sidebar .brand{font-size:15px;font-weight:700;letter-spacing:-.02em;padding:8px 12px 18px;color:var(--a)}
+.sidebar .brand{font-size:15px;font-weight:700;letter-spacing:-.02em;padding:8px 12px 18px;color:var(--a);display:flex;justify-content:space-between;align-items:center}
 .sidebar .nav-btn{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:12px;flex:0 0 auto;font-size:14px;font-weight:600;color:var(--b)}
 .sidebar .nav-btn svg{width:20px;height:20px;flex-shrink:0}
 .sidebar .nav-btn:hover{background:var(--d);color:var(--a)}
@@ -25,10 +25,27 @@ main.layer-hidden{filter:blur(4px);transform:scale(0.98);opacity:0.6;pointer-eve
 .sidebar .sb-add{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;background:var(--a);color:#fff;font-size:14px;font-weight:600;transition:background .2s}
 .sidebar .sb-add:hover{background:#000}
 .sidebar .sb-add svg{width:18px;height:18px;stroke-width:2.3}
-main{flex:1;overflow:hidden;position:relative}
+.side-toggle{color:var(--b);padding:4px;border-radius:8px;transition:background .2s,color .2s;flex-shrink:0}
+.side-toggle:hover{background:var(--d);color:var(--a)}
+.side-toggle svg{width:20px;height:20px}
+.side-prof{display:none;align-items:center;gap:12px;padding:10px;margin:40px 0;border-radius:12px;background:var(--d);color:var(--a);transition:background .2s;width:100%;overflow:hidden;text-align:left}
+.side-prof:hover{background:#EAEAE4}
+.side-prof .prof-ic{background:#fff}
+.side-prof-name{font-weight:600;font-size:14px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.sidebar.collapsed{padding:20px 8px 16px}
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .nav-btn span,
+.sidebar.collapsed .sb-add span,
+.sidebar.collapsed .side-prof-name{display:none}
+.sidebar.collapsed .brand{justify-content:center;padding:8px 0 18px}
+.sidebar.collapsed .nav-btn{justify-content:center;padding:12px 0}
+.sidebar.collapsed .nav-btn svg{margin:0}
+.sidebar.collapsed .sb-add{padding:14px 0}
+.sidebar.collapsed .side-prof{justify-content:center;padding:10px 0;margin:40px 0}
+main{flex:1;overflow:hidden;position:relative;min-width:0}
 .tab{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .25s ease-out,transform .25s var(--smooth),visibility .25s}
 .tab.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
-.scroll{flex:1;overflow-y:auto;padding:0 var(--e) 24px;-webkit-overflow-scrolling:touch}
+.scroll{flex:1;min-height:0;overflow-y:auto;padding:0 var(--e) 24px;-webkit-overflow-scrolling:touch}
 .scroll::-webkit-scrollbar{width:0}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--e) 12px;min-height:56px;flex-shrink:0}
 .topbar h2{font-size:20px;font-weight:600;letter-spacing:-.02em}
@@ -304,7 +321,22 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   transform: scale(0.95);
 }
 
-@media (min-width:720px){body{display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:100dvh;overflow:hidden}.sidebar{display:flex}.nav{display:none}.speeddial{display:none}.scroll,.topbar,.search-row{max-width:800px;margin-inline:auto;width:100%}.card{border-radius:28px}.chips-bar{justify-content:center;flex-wrap:wrap;row-gap:8px}.sheet-bg{max-width:100%;background:rgba(17,18,20,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.sheet{top:50%;bottom:auto;left:50%;right:auto;margin:0;width:calc(100% - 32px);max-width:480px;max-height:85dvh;border-radius:24px;padding-top:24px;transform:translate(-50%,-50%) scale(.94);opacity:0;visibility:hidden;transition:transform .35s var(--spring),opacity .2s ease,visibility .35s;box-shadow:0 24px 60px -12px rgba(0,0,0,.28)}.sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}.sheet .handle{display:none}}
+@media (min-width:720px){
+  body{display:grid;grid-template-columns:var(--side-w) minmax(0,1fr);grid-template-rows:100dvh;overflow:hidden;transition:grid-template-columns .3s var(--smooth)}
+  body.side-collapsed{--side-w:72px}
+  .sidebar{display:flex}
+  .side-prof{display:flex}
+  #tabHome .topbar .prof{display:none}
+  .nav{display:none}
+  .speeddial{display:none}
+  .scroll,.topbar,.search-row{max-width:800px;margin-inline:auto;width:100%}
+  .card{border-radius:28px}
+  .chips-bar{justify-content:center;flex-wrap:wrap;row-gap:8px}
+  .sheet-bg{max-width:100%;background:rgba(17,18,20,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .sheet{top:50%;bottom:auto;left:50%;right:auto;margin:0;width:calc(100% - 32px);max-width:480px;max-height:85dvh;border-radius:24px;padding-top:24px;transform:translate(-50%,-50%) scale(.94);opacity:0;visibility:hidden;transition:transform .35s var(--spring),opacity .2s ease,visibility .35s;box-shadow:0 24px 60px -12px rgba(0,0,0,.28)}
+  .sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}
+  .sheet .handle{display:none}
+}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .anim-in{animation:fadeIn .5s cubic-bezier(.16,1,.3,1) both}
 @keyframes popIn{0%{transform:scale(0.9);opacity:0}50%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
@@ -314,12 +346,21 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <body>
 
 <aside class=sidebar>
-  <div class=brand>Pocketracker</div>
+  <div class=brand>
+    <span class="brand-text">Pocketracker</span>
+    <button class="side-toggle" id="sideToggle" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <button class="side-prof" id="sideProfBtn">
+    <span class="prof-ic" id="sideProfIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></svg></span>
+    <span class="side-prof-name" id="sideProfName">Personal</span>
+  </button>
   <button class="nav-btn active" data-tab=home><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z"/></svg><span>Home</span></button>
   <button class=nav-btn data-tab=activity><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></button>
   <button class=nav-btn data-tab=insights><svg viewBox="0 0 24 24"><path d="M5 20v-6M12 20V8M19 20v-10"/></svg><span>Insights</span></button>
   <button class=nav-btn data-tab=more><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg><span>More</span></button>
-  <button class=sb-add id=sbAdd><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add transaction</button>
+  <button class=sb-add id=sbAdd><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Add transaction</span></button>
 </aside>
 
 <div class=speeddial id=speeddial>
@@ -616,7 +657,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],uid=()=>Math.random().toString(36).slice(2,10),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),pad=n=>String(n).padStart(2,'0');
-const K='pocketracker_state';
+const K='pocketracker_state',KS='pocketracker_side_collapsed';
 const D=[{color:'#E85C4A',pastel:'#FCE4E1'},{color:'#D4951F',pastel:'#FAEDD4'},{color:'#F0B429',pastel:'#FDF1D6'},{color:'#2D9E5C',pastel:'#D9F1E3'},{color:'#2AA9A1',pastel:'#D6EFED'},{color:'#3B82F6',pastel:'#DBEAFE'},{color:'#6366F1',pastel:'#E0E2FD'},{color:'#8B5CF6',pastel:'#EDE5FD'},{color:'#EC4899',pastel:'#FBE2F0'},{color:'#6B6C70',pastel:'#E8E8E5'}];
 const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],ML=['January','February','March','April','May','June','July','August','September','October','November','December'],DL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const CURRENCIES=[
@@ -684,6 +725,8 @@ a:[{id:'cash',name:'Cash',type:'cash'},{id:'bank',name:'Bank',type:'bank'},{id:'
 t:[]};
 
 try{const st=JSON.parse(localStorage.getItem(K));if(st){s.profile=st.p||s.profile;s.p=st.ps||s.p;s.budget=st.b!==undefined?st.b:0;s.c=st.c||s.c;s.a=st.a||s.a;s.t=st.t||[];s.dateFormat=st.df||s.dateFormat;s.timeFormat=st.tf||s.timeFormat;s.customColors=st.cc||[];s.currency=st.cur||s.currency;s.currencyCode=st.curCode||s.currencyCode;const iM={'user':0,'card':1,'home':2,'briefcase':3,'users':4,'star':5,'target':6,'send':7,'gift':8,'book':9,'heart':10,'sparkles':11};s.p.forEach(p=>{if(typeof p.icon==='string')p.icon=iM[p.icon]||0})}}catch(e){}
+
+try{if(localStorage.getItem(KS)==='1'){document.body.classList.add('side-collapsed');document.querySelector('.sidebar').classList.add('collapsed')}}catch(e){}
 
 s.c=s.c.map((c,i)=>{if(!c.color||!c.pastel){const d=D[i%D.length];c.color=c.color||d.color;c.pastel=c.pastel||d.pastel}return c});
 s.p=s.p.map((p,i)=>{if(!p.color||!p.pastel){const d=D[i%D.length];p.color=p.color||d.color;p.pastel=p.pastel||d.pastel}return p});
@@ -1500,11 +1543,18 @@ function rI(){
 }
 $('#periodTabs').onclick=e=>{const b=e.target.closest('button[data-p]');if(!b)return;s.period=b.dataset.p;rI()};
 
-// --- Profile header + currency display ---
+// --- Profile header + currency display + sidebar sync ---
 function rPH(){
   const p=s.p.find(x=>x.name===s.profile)||s.p[0];
+  // Topbar (mobile)
   $('#profName').textContent=s.profile;
   const i=$('#profBtn .prof-ic');i.innerHTML=ic(p?p.icon:0);if(p&&p.pastel)i.style.background=p.pastel;
+  // Sidebar (desktop)
+  const sideIcon=$('#sideProfIcon');
+  const sideName=$('#sideProfName');
+  if(sideIcon){sideIcon.innerHTML=ic(p?p.icon:0);if(p&&p.pastel)sideIcon.style.background=p.pastel}
+  if(sideName)sideName.textContent=s.profile;
+  // Currency
   const cur=CURRENCIES.find(c=>c.cur===s.currency)||CURRENCIES[11];
   const flagEl=$('#curFlag'),codeEl=$('#curCode');
   if(flagEl)flagEl.textContent=cur.flag;
@@ -1574,6 +1624,14 @@ $('#tpSet').onclick=()=>{
   uTL();
   cSub('sheetTimePicker');
 };
+
+// --- Sidebar toggle + profile ---
+$('#sideToggle').onclick=()=>{
+  const collapsed=document.body.classList.toggle('side-collapsed');
+  document.querySelector('.sidebar').classList.toggle('collapsed');
+  try{if(collapsed)localStorage.setItem(KS,'1');else localStorage.removeItem(KS)}catch(e){}
+};
+$('#sideProfBtn').onclick=oPS;
 
 // --- Wire up + init ---
 $('#profBtn').onclick=oPS;
