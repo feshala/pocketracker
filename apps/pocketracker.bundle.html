@@ -5,14 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Pocketracker</title>
 <style>
-:root{--a:#111214;--b:#8B8C90;--c:#E8E8E2;--d:#F5F5F0;--nav-h:84px;--e:clamp(16px,5vw,40px);--r-card:clamp(18px,4vw,26px);--gap:clamp(10px,2vw,16px)}
+:root{--a:#111214;--b:#8B8C90;--c:#E8E8E2;--d:#F5F5F0;--nav-h:84px;--e:clamp(16px,5vw,40px);--r-card:clamp(18px,4vw,26px);--gap:clamp(10px,2vw,16px);--spring:cubic-bezier(0.175,0.885,0.32,1.275);--smooth:cubic-bezier(0.16,1,0.3,1)}
 *{box-sizing:border-box;margin:0;padding:0}
+::-webkit-scrollbar{width:0px;background:transparent}
 html,body{min-height:100dvh}
 body{display:flex;flex-direction:column;background:#fff;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--a);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 svg{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.7}
 [hidden]{display:none!important}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input{font:inherit;color:inherit}
+main{transition:filter .3s ease, transform .3s ease, opacity .3s ease}
+main.layer-hidden{filter:blur(4px);transform:scale(0.98);opacity:0.6;pointer-events:none}
 .sidebar{display:none;flex-direction:column;gap:4px;padding:20px 14px 16px;background:#fff;border-right:1px solid var(--c)}
 .sidebar .brand{font-size:15px;font-weight:700;letter-spacing:-.02em;padding:8px 12px 18px;color:var(--a)}
 .sidebar .nav-btn{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:12px;flex:0 0 auto;font-size:14px;font-weight:600;color:var(--b)}
@@ -23,8 +26,8 @@ input{font:inherit;color:inherit}
 .sidebar .sb-add:hover{background:#000}
 .sidebar .sb-add svg{width:18px;height:18px;stroke-width:2.3}
 main{flex:1;overflow:hidden;position:relative}
-.tab{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s,visibility .22s}
-.tab.active{opacity:1;visibility:visible;pointer-events:auto}
+.tab{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .25s ease-out,transform .25s var(--smooth),visibility .25s}
+.tab.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
 .scroll{flex:1;overflow-y:auto;padding:0 var(--e) 24px;-webkit-overflow-scrolling:touch}
 .scroll::-webkit-scrollbar{width:0}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--e) 12px;min-height:56px;flex-shrink:0}
@@ -79,7 +82,7 @@ h1{font-size:clamp(22px,5.5vw,32px);line-height:1.3;letter-spacing:-.022em;font-
 .search input::placeholder{color:var(--b)}
 #searchCancel{display:none;font-size:12px;font-weight:600;color:var(--b);flex-shrink:0;padding:0;letter-spacing:.02em}
 .search-row{display:flex;gap:8px;align-items:center;padding:18px var(--e) 12px;min-height:56px}
-.search-row .search{flex:1 1 auto}
+.search-row .search{flex:1 1 auto;transition:flex .3s var(--smooth),width .3s var(--smooth)}
 .search-row.focused .search{flex:1 1 100%;width:100%}
 .search-row.focused .filter-btn{flex:0;width:0;padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden;min-width:0}
 .search-row.focused #searchCancel{display:block}
@@ -129,7 +132,7 @@ h1{font-size:clamp(22px,5.5vw,32px);line-height:1.3;letter-spacing:-.022em;font-
   background-position:right 6px center;
   background-size:12px;
   outline:none;
-  transition:border-color .18s,background-color .18s;
+  transition:all .3s var(--smooth);
   text-overflow:ellipsis;
 }
 .filter-btn:hover{border-color:#CFCFC7}
@@ -208,10 +211,15 @@ h1{font-size:clamp(22px,5.5vw,32px);line-height:1.3;letter-spacing:-.022em;font-
 .speeddial.on .sd-btn:nth-child(3){transition-delay:0s}
 .sd-ic{width:30px;height:30px;border-radius:50%;background:var(--d);display:grid;place-items:center;flex-shrink:0}
 .sd-ic svg{width:15px;height:15px}
-.sheet-bg{position:fixed;top:0;bottom:0;left:0;right:0;margin:0 auto;max-width:min(100%,540px);background:rgba(17,18,20,.3);opacity:0;pointer-events:none;transition:opacity .3s;z-index:30}
+.sheet-bg{position:fixed;top:0;bottom:0;left:0;right:0;margin:0 auto;max-width:100%;background:rgba(17,18,20,.3);opacity:0;pointer-events:none;transition:opacity .3s;z-index:30}
 .sheet-bg.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;bottom:0;left:0;right:0;margin:0 auto;max-width:min(100%,540px);background:#fff;border-radius:26px 26px 0 0;padding:10px var(--e) 22px;transform:translateY(100%);transition:transform .35s cubic-bezier(.22,.7,.3,1);z-index:31;max-height:92dvh;overflow-y:auto;box-shadow:0 -8px 40px -4px rgba(0,0,0,.1)}
+.sheet{position:fixed;bottom:0;left:0;right:0;margin:0 auto;max-width:100%;background:#fff;border-radius:26px 26px 0 0;padding:10px var(--e) 22px;transform:translateY(100%);transition:transform .4s var(--spring);z-index:31;max-height:92dvh;overflow-y:auto;box-shadow:0 -8px 40px -4px rgba(0,0,0,.1)}
 .sheet.on{transform:translateY(0)}
+.sheet.sub-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(20px) scale(0.95) !important;
+}
 .sheet::-webkit-scrollbar{width:0}
 .handle{width:38px;height:4px;border-radius:2px;background:#D9D9D1;margin:0 auto 18px}
 .sheet-title{font-size:clamp(18px,4vw,22px);font-weight:600;letter-spacing:-.015em;line-height:1.3}
@@ -287,9 +295,20 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .cal-day.empty{visibility:hidden}
 .cal-day.today{border:1.5px solid var(--a)}
 .cal-dow{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--b);padding:4px 0}
-@media (min-width:720px){body{display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:100dvh;overflow:hidden}.sidebar{display:flex}.nav{display:none}.speeddial{display:none}.scroll,.topbar,.search-row{max-width:1080px;margin-inline:auto;width:100%}.card{border-radius:28px}.sheet-bg{max-width:100%;background:rgba(17,18,20,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.sheet{top:50%;bottom:auto;left:50%;right:auto;margin:0;width:calc(100% - 32px);max-width:480px;max-height:85dvh;border-radius:24px;padding-top:24px;transform:translate(-50%,-50%) scale(.94);opacity:0;visibility:hidden;transition:transform .28s cubic-bezier(.22,.7,.3,1),opacity .2s ease,visibility .28s;box-shadow:0 24px 60px -12px rgba(0,0,0,.28)}.sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}.sheet .handle{display:none}}
+
+/* Global tactile feedback (applied after base styles so it takes precedence) */
+.btn, .chip, .txn, .nav-btn, .color-dot, .cur-item, .more-row, .list-row .lr-edit {
+  transition: transform 0.15s var(--spring), background-color 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+}
+.btn:active, .chip:active, .txn:active, .nav-btn:active, .color-dot:active, .cur-item:active, .more-row:active, .list-row .lr-edit:active {
+  transform: scale(0.95);
+}
+
+@media (min-width:720px){body{display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:100dvh;overflow:hidden}.sidebar{display:flex}.nav{display:none}.speeddial{display:none}.scroll,.topbar,.search-row{max-width:800px;margin-inline:auto;width:100%}.card{border-radius:28px}.chips-bar{justify-content:center;flex-wrap:wrap;row-gap:8px}.sheet-bg{max-width:100%;background:rgba(17,18,20,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}.sheet{top:50%;bottom:auto;left:50%;right:auto;margin:0;width:calc(100% - 32px);max-width:480px;max-height:85dvh;border-radius:24px;padding-top:24px;transform:translate(-50%,-50%) scale(.94);opacity:0;visibility:hidden;transition:transform .35s var(--spring),opacity .2s ease,visibility .35s;box-shadow:0 24px 60px -12px rgba(0,0,0,.28)}.sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}.sheet .handle{display:none}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .anim-in{animation:fadeIn .5s cubic-bezier(.16,1,.3,1) both}
+@keyframes popIn{0%{transform:scale(0.9);opacity:0}50%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
+.anim-pop{animation:popIn .4s var(--spring) both}
 </style>
 </head>
 <body>
@@ -552,10 +571,16 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <button data-m=clock>Clock</button>
   </div>
   <div id=tpTypeWrap>
-    <label class=label>Hours</label>
-    <div class=field><input id=tpH inputmode=numeric maxlength=2 placeholder="00" autocomplete=off style="font-size:22px"></div>
-    <label class=label>Minutes</label>
-    <div class=field><input id=tpM inputmode=numeric maxlength=2 placeholder="00" autocomplete=off style="font-size:22px"></div>
+    <div style="display:flex; gap:10px">
+      <div style="flex:1">
+        <label class=label>Hours</label>
+        <div class=field><input id=tpH inputmode=numeric maxlength=2 placeholder="00" autocomplete=off style="font-size:22px"></div>
+      </div>
+      <div style="flex:1">
+        <label class=label>Minutes</label>
+        <div class=field><input id=tpM inputmode=numeric maxlength=2 placeholder="00" autocomplete=off style="font-size:22px"></div>
+      </div>
+    </div>
   </div>
   <div id=tpClockWrap hidden>
     <div class=clock-wrap id=tpDialWrap></div>
@@ -764,6 +789,7 @@ function rCP(id,cur,curP,cb){
 // --- Time Picker ---
 let tpState={h:12,m:0,mode:'type'};
 let clockDragging=false;
+let clockDragTarget=null;
 function oTP(){
   const parts=(A.time||gTime()).split(':');
   tpState.h=parseInt(parts[0],10)||0;tpState.m=parseInt(parts[1],10)||0;tpState.mode='type';
@@ -825,15 +851,13 @@ function renderClock(){
   wrap.innerHTML=svg;
 
   function handleDrag(e){
+    if(!clockDragTarget)return;
     const r=wrap.getBoundingClientRect();
     const cx=r.left+r.width/2,cy=r.top+r.height/2;
     const x=e.clientX-cx,y=e.clientY-cy;
-    const dist=Math.sqrt(x*x+y*y);
-    const scale=200/r.width;
-    const distSvg=dist*scale;
     let angle=Math.atan2(y,x)*180/Math.PI+90;
     if(angle<0)angle+=360;
-    if(distSvg>60){
+    if(clockDragTarget==='hour'){
       if(is12){
         let h=Math.round(angle/30);
         tpState.h=h%12||12;
@@ -848,6 +872,13 @@ function renderClock(){
 
   wrap.onpointerdown=e=>{
     clockDragging=true;
+    const r=wrap.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const x=e.clientX-cx,y=e.clientY-cy;
+    const dist=Math.sqrt(x*x+y*y);
+    const scale=200/r.width;
+    const distSvg=dist*scale;
+    clockDragTarget = distSvg > 60 ? 'hour' : 'minute';
     try{wrap.setPointerCapture(e.pointerId)}catch(err){}
     handleDrag(e);
   };
@@ -856,9 +887,10 @@ function renderClock(){
   };
   wrap.onpointerup=e=>{
     clockDragging=false;
+    clockDragTarget=null;
     try{wrap.releasePointerCapture(e.pointerId)}catch(err){}
   };
-  wrap.onpointercancel=()=>{clockDragging=false};
+  wrap.onpointercancel=()=>{clockDragging=false;clockDragTarget=null};
 }
 
 // --- Date Picker ---
@@ -899,10 +931,30 @@ $('#calToday').onclick=()=>{A.date=gT();uDL();cSub('sheetDatePicker')};
 
 // --- Sheets ---
 let iB=false;
-function cS(){$$('.sheet').forEach(x=>{x.classList.remove('on');x.style.zIndex=''});$('#sheetBg').classList.remove('on');$('#speeddial').classList.remove('on');if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()}
-function oS(id,skipPush){cS();iB=true;$('#'+id).classList.add('on');$('#sheetBg').classList.add('on');if(!skipPush)history.pushState({layer:2},'');setTimeout(()=>{iB=false},300)}
-function oS2(id,skipPush){$('#'+id).classList.add('on');$('#'+id).style.zIndex=35;$('#sheetBg').classList.add('on');if(!skipPush)history.pushState({layer:3},'')}
-function cSub(id){$('#'+id).classList.remove('on');$('#'+id).style.zIndex='';if($$('.sheet.on').length===0)cS()}
+function updateMainLayer(){
+  const hasSheets = $$('.sheet.on').length > 0;
+  const mainEl = document.querySelector('main');
+  if(mainEl) mainEl.classList.toggle('layer-hidden', hasSheets);
+}
+function cS(){$$('.sheet').forEach(x=>{x.classList.remove('on','sub-hidden');x.style.zIndex=''});$('#sheetBg').classList.remove('on');$('#speeddial').classList.remove('on');if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();updateMainLayer()}
+function oS(id,skipPush){cS();iB=true;$('#'+id).classList.add('on');$('#sheetBg').classList.add('on');if(!skipPush)history.pushState({layer:2},'');setTimeout(()=>{iB=false},300);updateMainLayer()}
+function oS2(id,skipPush){
+  $$('.sheet.on').forEach(x => {
+    if (x.id !== id) x.classList.add('sub-hidden');
+  });
+  $('#'+id).classList.add('on');
+  $('#'+id).style.zIndex=35;
+  $('#sheetBg').classList.add('on');
+  if(!skipPush)history.pushState({layer:3},'');
+  updateMainLayer();
+}
+function cSub(id){
+  $('#'+id).classList.remove('on');
+  $('#'+id).style.zIndex='';
+  $$('.sheet').forEach(x => x.classList.remove('sub-hidden'));
+  if($$('.sheet.on').length===0)cS();
+  else updateMainLayer();
+}
 $('#sheetBg').onclick=()=>{if(iB)return;const sub=$$('.sheet.on').find(x=>x.style.zIndex==='35');if(sub){cSub(sub.id);return}cS()};
 
 // --- Tabs / Views ---
@@ -1247,7 +1299,13 @@ function rH(){
   const inc=mt.filter(t=>t.type==='income').reduce((sum,t)=>sum+t.amount,0);
   if(act.length===0){card.classList.remove('filled','hasexpense','hasbudget');$('#sumAmount').textContent='$0.00';$('#sumLabel').textContent='This month'}
   else{
-    card.classList.add('filled');$('#sumAmount').textContent=f(exp);$('#sumLabel').textContent='Spent this month';
+    card.classList.add('filled');
+    const sumEl=$('#sumAmount');
+    sumEl.textContent=f(exp);
+    sumEl.classList.remove('anim-pop');
+    void sumEl.offsetWidth;
+    sumEl.classList.add('anim-pop');
+    $('#sumLabel').textContent='Spent this month';
     if(s.budget>0){
       card.classList.add('hasbudget');
       const r=exp/s.budget,pct=Math.min(100,r*100),raw=r*100;
@@ -1322,7 +1380,6 @@ if(searchInputEl){
     if(window.innerWidth<720)searchRow.classList.add('focused');
   });
   searchInputEl.addEventListener('blur',()=>{
-    // Only auto-remove if not currently clicking Cancel (Cancel handler also removes)
     searchRow.classList.remove('focused');
   });
 }
