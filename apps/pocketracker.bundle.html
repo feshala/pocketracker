@@ -779,11 +779,10 @@ try{const st=JSON.parse(localStorage.getItem(K));if(st){s.profile=st.p||s.profil
 try{if(localStorage.getItem(KS)==='1'){document.body.classList.add('side-collapsed');$('.sidebar').classList.add('collapsed')}}catch(e){}
 s.p=s.p.map(p=>{if(!p.settings){p.settings={budget:s.budget||0,categories:s.c||cln(DEFAULT_CATS),dateFormat:s.dateFormat||'MMM d',timeFormat:s.timeFormat||'24h',currency:s.currency||'USD'}}return p});
 s.p.forEach(p=>{if(p.settings&&!p.settings.accounts)p.settings.accounts=cln(s.a)});
-s.t.forEach(t=>{
-  if(t.categoryId && !s.c.find(c=>c.id===t.categoryId)){
-    const fb=s.c.find(c=>c.type===t.type)||s.c[0];
-    if(fb)t.categoryId=fb.id;
-  }
+s.p.forEach(p=>{
+  const cats=p.settings?.categories;
+  if(Array.isArray(cats)&&cats.length)
+    reassignOrphans(s.t.filter(t=>t.profileId===p.id),cats);
 });
 const fillColors=arr=>arr.forEach((x,i)=>{if(!x.color||!x.pastel){const d=D[i%D.length];x.color=x.color||d.color;x.pastel=x.pastel||d.pastel}});
 fillColors(s.c);fillColors(s.p);
@@ -802,6 +801,14 @@ const canDeleteCat=id=>{
   const c=s.c.find(x=>x.id===id);
   return c && s.c.some(x=>x.id!==id && x.type===c.type);
 };
+function reassignOrphans(txns,cats){
+  txns.forEach(t=>{
+    if(t.categoryId && !cats.find(c=>c.id===t.categoryId)){
+      const fb=cats.find(c=>c.type===t.type)||cats[0];
+      if(fb)t.categoryId=fb.id;
+    }
+  });
+}
 const gA=id=>s.a.find(a=>a.id===id)||{name:'—'};
 const dk=d=>{if(typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)){const[y,m,dd]=d.split('-').map(Number);return new Date(y,m-1,dd).toDateString()}return new Date(d).toDateString()},tK=dk(Date.now()),yK=dk(Date.now()-86400000);
 const aT=()=>s.t.filter(t=>(t.profileId||s.p[0].id)===getActiveProfileId());
@@ -931,13 +938,11 @@ function oPS(){$('#profList').innerHTML=s.p.map(p=>`<button class="pi" data-id="
 let pD=null;
 function oDC(title,sub,btn,skipPush){$('#confirmTitle').textContent=title;$('#confirmSub').textContent=sub;$('#confirmYes').textContent=btn;oS2('sheetConfirm',skipPush)}
 $('#confirmNo').onclick=()=>{pD=null;cSub('sheetConfirm')};
-$('#confirmYes').onclick=()=>{if(!pD)return;const d=pD;pD=null;if(d.type==='exit'){location.reload();return}if(d.type==='transaction'){s.t=s.t.filter(x=>x.id!==d.id);sv();R();cS();tt('Transaction deleted');return}
+$('#confirmYes').onclick=()=>{if(!pD)return;const d=pD;pD=null;if(d.type==='import-replace'){applyImport(d.data,d.cleanP,d.cleanT);return}if(d.type==='exit'){location.reload();return}if(d.type==='transaction'){s.t=s.t.filter(x=>x.id!==d.id);sv();R();cS();tt('Transaction deleted');return}
 if(d.type==='category'){
   if(!canDeleteCat(d.id)){tt('Keep at least one');cS();return}
-  const deleted=s.c.find(c=>c.id===d.id);
-  const fallback=s.c.find(c=>c.id!==d.id && c.type===deleted.type);
-  s.t.forEach(t=>{if(t.categoryId===d.id)t.categoryId=fallback.id});
   s.c=s.c.filter(c=>c.id!==d.id);
+  reassignOrphans(s.t.filter(t=>t.profileId===getActiveProfileId()),s.c);
   sv();R();cS();sMV('categories');tt('Category removed');
   return;
 }else if(d.type==='profile'){if(s.p.length<=1){tt('Keep at least one');cS();return}const p=s.p.find(x=>x.id===d.id);s.p=s.p.filter(x=>x.id!==d.id);s.t=s.t.filter(t=>t.profileId!==d.id);if(p&&s.profile===p.name){s.profile=s.p[0].name;loadProfileSettings(s.p[0])}sv();R();cS();sMV('profiles');tt('Profile removed')}else if(d.type==='reset'){localStorage.removeItem(K);setTimeout(()=>location.reload(),300)}};
@@ -974,6 +979,37 @@ function exportJSON(){
   a.href=url;a.download='pocketracker_backup.json';a.click();URL.revokeObjectURL(url);
   tt('Backup exported');
 }
+function applyImport(data,cleanP,cleanT){
+  if(cleanP.length===1){
+    const inc=cleanP[0];
+    const cur=s.p.find(x=>x.name.toLowerCase()===inc.name.toLowerCase());
+    if(cur){
+      s.t=s.t.filter(t=>t.profileId!==cur.id);
+      cleanT.forEach(t=>s.t.push({...t,profileId:cur.id}));
+      Object.assign(cur,{
+        info:inc.info??cur.info,icon:inc.icon??cur.icon,
+        color:inc.color??cur.color,pastel:inc.pastel??cur.pastel,
+        settings:inc.settings??cur.settings
+      });
+    }else{s.p.push(inc);s.t.push(...cleanT)}
+  }else{
+    s.p=cleanP;s.t=cleanT;
+  }
+  const m=s.p.find(p=>p.name===data.p)||s.p[0];
+  if(m){
+    if(!m.settings)m.settings={};
+    if(m.settings.budget===undefined && typeof data.b==='number')m.settings.budget=data.b;
+    if(!m.settings.categories && Array.isArray(data.c))m.settings.categories=data.c;
+    if(!m.settings.accounts && Array.isArray(data.a))m.settings.accounts=data.a;
+    if(!m.settings.dateFormat && typeof data.df==='string')m.settings.dateFormat=data.df;
+    if(m.settings.timeFormat===undefined && typeof data.tf==='string')m.settings.timeFormat=data.tf;
+    if(!m.settings.currency && typeof data.cur==='string')m.settings.currency=data.cur;
+    s.profile=m.name;
+    loadProfileSettings(m);
+  }
+  if(Array.isArray(data.cc))s.customColors=data.cc;
+  sv();R();cS();tt('Backup restored');
+}
 function importJSON(file){
   const rd=new FileReader();
   rd.onload=()=>{
@@ -994,33 +1030,20 @@ function importJSON(file){
         typeof t.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(t.date)&&
         typeof t.profileId==='string'
       );
-      if(cleanP.length===1){
-        const inc=cleanP[0];
-        const cur=s.p.find(x=>x.name.toLowerCase()===inc.name.toLowerCase());
-        if(cur){
-          s.t=s.t.filter(t=>t.profileId!==cur.id);
-          cleanT.forEach(t=>s.t.push({...t,profileId:cur.id}));
-          Object.assign(cur,{
-            info:inc.info??cur.info,icon:inc.icon??cur.icon,
-            color:inc.color??cur.color,pastel:inc.pastel??cur.pastel,
-            settings:inc.settings??cur.settings
-          });
-        }else{s.p.push(inc);s.t.push(...cleanT)}
-      }else{
+      if(cleanP.length>1){
         const clash=cleanP.filter(ip=>s.p.some(ep=>ep.name.toLowerCase()===ip.name.toLowerCase()));
-        if(clash.length&&!confirm(`${clash.length} profile name(s) already exist. Replace ALL profiles?`))return;
-        s.p=cleanP;s.t=cleanT;
+        if(clash.length){
+          pD={type:'import-replace',data,cleanP,cleanT};
+          oDC(
+            `${clash.length} profile name${clash.length>1?'s':''} already exist.`,
+            'Replace ALL profiles with imported ones? This cannot be undone.',
+            'Yes, replace',
+            true
+          );
+          return;
+        }
       }
-      if(typeof data.b==='number')s.budget=data.b;
-      if(Array.isArray(data.c))s.c=data.c;
-      if(Array.isArray(data.a))s.a=data.a;
-      if(typeof data.df==='string')s.dateFormat=data.df;
-      if(typeof data.tf==='string')s.timeFormat=data.tf;
-      if(Array.isArray(data.cc))s.customColors=data.cc;
-      if(typeof data.cur==='string')s.currency=data.cur;
-      const m=s.p.find(p=>p.name===data.p)||s.p[0];
-      if(m){s.profile=m.name;loadProfileSettings(m)}
-      sv();R();cS();tt('Backup restored');
+      applyImport(data,cleanP,cleanT);
     }catch(e){tt('Invalid backup file')}
   };
   rd.readAsText(file);
